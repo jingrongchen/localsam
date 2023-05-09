@@ -8,8 +8,8 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 20
-    MemorySize: 128
+    Timeout: 900
+    MemorySize: 10240
 
 Parameters:
   SomeVar:
@@ -24,7 +24,7 @@ Resources:
       CodeUri: HelloWorldFunction
       Handler: helloworld.App::handleRequest
       Runtime: java8
-      MemorySize: 1024
+      MemorySize: 10240
       Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
         Variables:
           PIXELS_HOM: !Ref SomeVar

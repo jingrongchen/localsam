@@ -27,21 +27,21 @@ import io.pixelsdb.pixels.common.turbo.WorkerType;
 import io.pixelsdb.pixels.planner.plan.physical.domain.*;
 import io.pixelsdb.pixels.planner.plan.physical.input.PartitionInput;
 import io.pixelsdb.pixels.planner.plan.physical.output.PartitionOutput;
-import io.pixelsdb.pixels.planner.plan.physical.input.ScanInput;
+import io.pixelsdb.pixels.planner.plan.physical.input.ThreadScanInput;
 import io.pixelsdb.pixels.planner.plan.physical.output.ScanOutput;
-import io.pixelsdb.pixels.worker.common.BaseScanWorker;
+import io.pixelsdb.pixels.worker.common.BaseThreadScanWorker;
 
 
-public class App implements RequestHandler<ScanInput, ScanOutput>
+public class App implements RequestHandler<ThreadScanInput, ScanOutput>
 {
     private static final Logger logger = LoggerFactory.getLogger(App.class);
     private final WorkerMetrics workerMetrics = new WorkerMetrics();
 
     @Override
-    public ScanOutput handleRequest(ScanInput event, Context context)
+    public ScanOutput handleRequest(ThreadScanInput event, Context context)
     {
         WorkerContext workerContext = new WorkerContext(logger, workerMetrics, context.getAwsRequestId());
-        BaseScanWorker baseWorker = new BaseScanWorker(workerContext);
+        BaseThreadScanWorker baseWorker = new BaseThreadScanWorker(workerContext);
         return baseWorker.process(event);
     }
 }
