@@ -28,7 +28,7 @@
         ],
         "filter": [
             "{\"schemaName\":\"tpch\",\"tableName\":\"orders\",\"columnFilters\":{1:{\"columnName\":\"o_custkey\",\"columnType\":\"LONG\",\"filterJson\":\"{\\\"javaType\\\":\\\"long\\\",\\\"isAll\\\":false,\\\"isNone\\\":false,\\\"allowNull\\\":false,\\\"ranges\\\":[{\\\"lowerBound\\\":{\\\"type\\\":\\\"UNBOUNDED\\\"},\\\"upperBound\\\":{\\\"type\\\":\\\"INCLUDED\\\",\\\"value\\\":100}},{\\\"lowerBound\\\":{\\\"type\\\":\\\"EXCLUDED\\\",\\\"value\\\":200},\\\"upperBound\\\":{\\\"type\\\":\\\"UNBOUNDED\\\"}}],\\\"discreteValues\\\":[]}\"}}}",
-            "{\"schemaName\":\"tpch\",\"tableName\":\"orders\",\"columnFilters\":{1:{\"columnName\":\"o_custkey\",\"columnType\":\"LONG\",\"filterJson\":\"{\\\"javaType\\\":\\\"long\\\",\\\"isAll\\\":false,\\\"isNone\\\":false,\\\"allowNull\\\":false,\\\"ranges\\\":[{\\\"lowerBound\\\":{\\\"type\\\":\\\"UNBOUNDED\\\"},\\\"upperBound\\\":{\\\"type\\\":\\\"INCLUDED\\\",\\\"value\\\":100}},{\\\"lowerBound\\\":{\\\"type\\\":\\\"EXCLUDED\\\",\\\"value\\\":200},\\\"upperBound\\\":{\\\"type\\\":\\\"UNBOUNDED\\\"}}],\\\"discreteValues\\\":[]}\"}}}"
+            "{\"schemaName\":\"tpch\",\"tableName\":\"orders\",\"columnFilters\":{1:{\"columnName\":\"o_orderkey\",\"columnType\":\"LONG\",\"filterJson\":\"{\\\"javaType\\\":\\\"long\\\",\\\"isAll\\\":false,\\\"isNone\\\":false,\\\"allowNull\\\":false,\\\"ranges\\\":[{\\\"lowerBound\\\":{\\\"type\\\":\\\"UNBOUNDED\\\"},\\\"upperBound\\\":{\\\"type\\\":\\\"INCLUDED\\\",\\\"value\\\":100}},{\\\"lowerBound\\\":{\\\"type\\\":\\\"EXCLUDED\\\",\\\"value\\\":200},\\\"upperBound\\\":{\\\"type\\\":\\\"UNBOUNDED\\\"}}],\\\"discreteValues\\\":[]}\"}}}"
         ],
         "inputSplits": [
             {
