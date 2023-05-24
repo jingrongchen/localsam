@@ -1,0 +1,555 @@
+{
+    "filterOnAggreation": {
+      "0": [
+        0
+      ],
+      "1": [
+        1
+      ]
+    },
+    "output": {
+      "encoding": true,
+      "path": [
+        "s3://jingrong-lambda-test/unit_tests/test_scan1/",
+        "s3://jingrong-lambda-test/unit_tests/test_scan2/"
+      ],
+      "randomFileName": false,
+      "storageInfo": {
+        "scheme": "s3"
+      }
+    },
+    "partialAggregationInfo": [
+      {
+        "aggregateColumnIds": [
+          4
+        ],
+        "functionTypes": [
+          "SUM"
+        ],
+        "groupKeyColumnAlias": [
+          "o_custkey_agg"
+        ],
+        "groupKeyColumnIds": [
+          1
+        ],
+        "numPartition": 0,
+        "partition": false,
+        "resultColumnAlias": [
+          "num_agg"
+        ],
+        "resultColumnTypes": [
+          "bigint"
+        ]
+      },
+      {
+        "aggregateColumnIds": [
+          1
+        ],
+        "functionTypes": [
+          "COUNT"
+        ],
+        "groupKeyColumnAlias": [
+          "o_custkey_agg"
+        ],
+        "groupKeyColumnIds": [
+          1
+        ],
+        "numPartition": 0,
+        "partition": false,
+        "resultColumnAlias": [
+          "num_agg"
+        ],
+        "resultColumnTypes": [
+          "bigint"
+        ]
+      }
+    ],
+    "partialAggregationPresent": true,
+    "queryId": 123456,
+    "scanProjection": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "tableInfo": {
+      "base": true,
+      "columnsToRead": [
+        "o_orderkey",
+        "o_custkey",
+        "o_orderstatus",
+        "o_orderpriority",
+        "o_totalprice"
+      ],
+      "filter": [
+        "{\"schemaName\":\"tpch\",\"tableName\":\"orders\",\"columnFilters\":{3:{\"columnName\":\"o_orderpriority\",\"columnType\":\"CHAR\",\"filterJson\":\"{\\\"javaType\\\":\\\"java.lang.String\\\",\\\"isAll\\\":false,\\\"isNone\\\":false,\\\"allowNull\\\":false,\\\"onlyNull\\\":false,\\\"ranges\\\":[],\\\"discreteValues\\\":[{\\\"type\\\":\\\"INCLUDED\\\",\\\"value\\\":\\\"3-MEDIUM\\\"}]}\"}}}",
+        "{\"schemaName\":\"tpch\",\"tableName\":\"orders\",\"columnFilters\":{2:{\"columnName\":\"o_orderstatus\",\"columnType\":\"CHAR\",\"filterJson\":\"{\\\"javaType\\\":\\\"java.lang.String\\\",\\\"isAll\\\":false,\\\"isNone\\\":false,\\\"allowNull\\\":false,\\\"onlyNull\\\":false,\\\"ranges\\\":[],\\\"discreteValues\\\":[{\\\"type\\\":\\\"INCLUDED\\\",\\\"value\\\":\\\"P\\\"}]}\"}}}"
+      ],
+      "inputSplits": [
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100901_50.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100903_51.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100906_52.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100908_53.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100911_54.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100913_55.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100916_56.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100918_57.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100921_58.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100923_59.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100925_60.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100928_61.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100930_62.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100932_63.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100935_64.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100937_65.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100940_66.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100942_67.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100945_68.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100947_69.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100949_70.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100952_71.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100954_72.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100956_73.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425100958_74.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101001_75.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101003_76.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101006_77.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101008_78.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101011_79.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101013_80.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101016_81.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101018_82.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101020_83.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101023_84.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101025_85.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101027_86.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101030_87.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101032_88.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101035_89.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101037_90.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101039_91.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101042_92.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101045_93.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101047_94.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101050_95.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101052_96.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101055_97.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101057_98.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101100_99.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        },
+        {
+          "inputInfos": [
+            {
+              "path": "jingrong-test/orders/v-0-order/20230425101102_100.pxl",
+              "rgLength": -1,
+              "rgStart": 0
+            }
+          ]
+        }
+      ],
+      "storageInfo": {
+        "scheme": "s3"
+      },
+      "tableName": "orders"
+    }
+  }

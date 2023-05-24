@@ -1,0 +1,104 @@
+{
+    "output": {
+        "encoding": true,
+        "path": [
+            "s3://jingrong-lambda-test/unit_tests/test_scan1/",
+            "s3://jingrong-lambda-test/unit_tests/test_scan2/"
+        ],
+        "randomFileName": false,
+        "storageInfo": {
+            "scheme": "s3"
+        }
+    },
+    "partialAggregationInfo": [{
+        "aggregateColumnIds": [
+            0
+        ],
+        "functionTypes": [
+            "SUM"
+        ],
+        "groupKeyColumnAlias": [
+            "o_orderstatus_2",
+            "o_orderdate_3"
+        ],
+        "groupKeyColumnIds": [
+            2,
+            3
+        ],
+        "numPartition": 0,
+        "partition": false,
+        "resultColumnAlias": [
+            "sum_o_orderkey_0"
+        ],
+        "resultColumnTypes": [
+            "bigint"
+        ]
+    },
+    {
+        "aggregateColumnIds": [
+            0
+        ],
+        "functionTypes": [
+            "SUM"
+        ],
+        "groupKeyColumnAlias": [
+            "o_ordercustkey_1",
+            "o_orderstatus_2"
+        ],
+        "groupKeyColumnIds": [
+            1,
+            2
+        ],
+        "numPartition": 0,
+        "partition": false,
+        "resultColumnAlias": [
+            "sum_o_orderkey_0"
+        ],
+        "resultColumnTypes": [
+            "bigint"
+        ]
+    }
+    ],
+    "partialAggregationPresent": true,
+    "filterOnAggreation":{
+        "0":[0,1],
+        "1":[0,1]
+    },
+    "queryId": 123456,
+    "scanProjection": [
+        true,
+        true,
+        true,
+        true
+    ],
+    "tableInfo": {
+        "base": true,
+        "columnsToRead": [
+            "o_orderkey",
+            "o_custkey",
+            "o_orderstatus",
+            "o_orderdate"
+        ],
+        "filter": "{\"schemaName\":\"tpch\",\"tableName\":\"orders\",\"columnFilters\":{}}",
+        "inputSplits": [
+        {
+            "inputInfos": [
+                {
+                    "path": "jingrong-test/orders/v-0-order/20230425100657_1.pxl",
+                    "rgLength": 2,
+                    "rgStart": 0
+                },
+                {
+                    "path": "jingrong-test/orders/v-0-order/20230425100657_1.pxl",
+                    "rgLength": 4,
+                    "rgStart": 2
+                }
+            ]
+        }
+        ],
+        "storageInfo": {
+            "scheme": "s3"
+        },
+        "tableName": "orders"
+    }
+}

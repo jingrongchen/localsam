@@ -34,6 +34,9 @@ import io.pixelsdb.pixels.worker.common.BaseThreadScanWorker;
 import io.pixelsdb.pixels.planner.plan.physical.input.ScanInput;
 import io.pixelsdb.pixels.planner.plan.physical.output.ScanOutput;
 import io.pixelsdb.pixels.worker.common.BaseScanWorker;
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.util.Objects.requireNonNull;
+
 
 public class App implements RequestHandler<ScanInput, ScanOutput>
 {

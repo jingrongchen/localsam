@@ -34,27 +34,14 @@
             {
                 "inputInfos": [
                     {
-                        "path": "jingrong-test/orders/v-0-order/20230425100700_2.pxl",
-                        "rgLength": -1,
+                        "path": "jingrong-test/orders/v-0-order/20230425100657_1.pxl",
+                        "rgLength": 2,
                         "rgStart": 0
-                    }
-                ]
-            },
-            {
-                "inputInfos": [
+                    },
                     {
-                        "path": "jingrong-test/orders/v-0-order/20230425101627_233.pxl",
-                        "rgLength": -1,
-                        "rgStart": 0
-                    }
-                ]
-            },
-            {
-                "inputInfos": [
-                    {
-                        "path": "jingrong-test/orders/v-0-order/20230425100715_8.pxl",
-                        "rgLength": -1,
-                        "rgStart": 0
+                        "path": "jingrong-test/orders/v-0-order/20230425100657_1.pxl",
+                        "rgLength": 4,
+                        "rgStart": 2
                     }
                 ]
             }
