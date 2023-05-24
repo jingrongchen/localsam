@@ -48,7 +48,7 @@ public class ResultTest
     @Test
     public void BaseResponse()
     {
-        String currentPath = "s3://jingrong-lambda-test/unit_tests/test_scan1/f9417123-c735-4463-a682-fe1222570195c62574fc-d3d7-4c7a-89d3-d2e817c9afeb_scan1_aggregation_0";
+        String currentPath = "s3://jingrong-lambda-test/unit_tests/test_scan1/baselinePart1";
         try {
 
             StorageFactory storagefactory = StorageFactory.Instance();
@@ -71,13 +71,13 @@ public class ResultTest
             PixelsRecordReader recordReader = reader.read(option);
             System.out.println(recordReader.getCompletedRows());
             // System.out.println(reader.getRowGroupInfo(0).getNumberOfRows());
-            int batchSize = 10000;
+            int batchSize = 1000;
             VectorizedRowBatch rowBatch;
             int len = 0;
             int num = 0;
             int row = 0;
 
-            for(int i=0;i<10;i++){
+            for(int i=0;i<20;i++){
                 rowBatch = recordReader.readBatch(batchSize);
                 System.out.println(rowBatch);
                 row++;

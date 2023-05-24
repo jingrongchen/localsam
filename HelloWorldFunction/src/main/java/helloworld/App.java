@@ -38,30 +38,30 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 
-public class App implements RequestHandler<ScanInput, ScanOutput>
-{
-    private static final Logger logger = LoggerFactory.getLogger(App.class);
-    private final WorkerMetrics workerMetrics = new WorkerMetrics();
-
-    @Override
-    public ScanOutput handleRequest(ScanInput event, Context context)
-    {
-        WorkerContext workerContext = new WorkerContext(logger, workerMetrics, context.getAwsRequestId());
-        BaseScanWorker baseWorker = new BaseScanWorker(workerContext);
-        return baseWorker.process(event);
-    }
-}
-
-// public class App implements RequestHandler<ThreadScanInput, ScanOutput>
+// public class App implements RequestHandler<ScanInput, ScanOutput>
 // {
 //     private static final Logger logger = LoggerFactory.getLogger(App.class);
 //     private final WorkerMetrics workerMetrics = new WorkerMetrics();
 
 //     @Override
-//     public ScanOutput handleRequest(ThreadScanInput event, Context context)
+//     public ScanOutput handleRequest(ScanInput event, Context context)
 //     {
 //         WorkerContext workerContext = new WorkerContext(logger, workerMetrics, context.getAwsRequestId());
-//         BaseThreadScanWorker baseWorker = new BaseThreadScanWorker(workerContext);
+//         BaseScanWorker baseWorker = new BaseScanWorker(workerContext);
 //         return baseWorker.process(event);
 //     }
 // }
+
+public class App implements RequestHandler<ThreadScanInput, ScanOutput>
+{
+    private static final Logger logger = LoggerFactory.getLogger(App.class);
+    private final WorkerMetrics workerMetrics = new WorkerMetrics();
+
+    @Override
+    public ScanOutput handleRequest(ThreadScanInput event, Context context)
+    {
+        WorkerContext workerContext = new WorkerContext(logger, workerMetrics, context.getAwsRequestId());
+        BaseThreadScanWorker baseWorker = new BaseThreadScanWorker(workerContext);
+        return baseWorker.process(event);
+    }
+}
