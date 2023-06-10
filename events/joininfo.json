@@ -1,0 +1,99 @@
+{
+    "joinInfo": {
+        "hashValues": [
+            16
+        ],
+        "joinType": "EQUI_INNER",
+        "largeColumnAlias": [
+            "l_partkey",
+            "l_extendedprice",
+            "l_discount"
+        ],
+        "largeProjection": [
+            false,
+            true,
+            true,
+            true
+        ],
+        "numPartition": 40,
+        "postPartition": true,
+        "postPartitionInfo": {
+            "keyColumnIds": [
+                0
+            ],
+            "numPartition": 100
+        },
+        "smallColumnAlias": [
+            "o_custkey",
+            "o_orderstatus",
+            "o_orderdate"
+        ],
+        "smallProjection": [
+            false,
+            true,
+            true,
+            true
+        ]
+    },
+    "largeTable": {
+        "base": false,
+        "columnsToRead": [
+            "l_orderkey",
+            "l_suppkey",
+            "l_extendedprice",
+            "l_discount"
+        ],
+        "inputFiles": [
+            "s3://jingrong-lambda-test/unit_tests/lineitem_part_0",
+            "s3://jingrong-lambda-test/unit_tests/lineitem_part_1"
+        ],
+        "keyColumnIds": [
+            0
+        ],
+        "parallelism": 2,
+        "storageInfo": {
+            "scheme": "s3"
+        },
+        "tableName": "lineitem"
+    },
+    "output": {
+        "encoding": true,
+        "fileNames": [
+            "partitioned_join_lineitem_orders_0"
+        ],
+        "path": "s3://jingrong-lambda-test/unit_tests/",
+        "randomFileName": false,
+        "storageInfo": {
+            "scheme": "s3"
+        }
+    },
+    "partialAggregationPresent": false,
+    "smallTable": {
+        "base": false,
+        "columnsToRead": [
+            "o_orderkey",
+            "o_custkey",
+            "o_orderstatus",
+            "o_orderdate"
+        ],
+        "inputFiles": [
+            "s3://jingrong-lambda-test/unit_tests/orders_part_0",
+            "s3://jingrong-lambda-test/unit_tests/orders_part_1",
+            "s3://jingrong-lambda-test/unit_tests/orders_part_2",
+            "s3://jingrong-lambda-test/unit_tests/orders_part_3",
+            "s3://jingrong-lambda-test/unit_tests/orders_part_4",
+            "s3://jingrong-lambda-test/unit_tests/orders_part_5",
+            "s3://jingrong-lambda-test/unit_tests/orders_part_6",
+            "s3://jingrong-lambda-test/unit_tests/orders_part_7"
+        ],
+        "keyColumnIds": [
+            0
+        ],
+        "parallelism": 8,
+        "storageInfo": {
+            "scheme": "s3"
+        },
+        "tableName": "orders"
+    },
+    "transId": 123456
+}

@@ -1,0 +1,114 @@
+{
+    "output": {
+        "encoding": true,
+        "path": [
+            "s3://jingrong-lambda-test/unit_tests/test_scan1/",
+            "s3://jingrong-lambda-test/unit_tests/test_scan2/"
+        ],
+        "randomFileName": true,
+        "storageInfo": {
+            "scheme": "s3"
+        }
+    },
+    "partialAggregationPresent": false,
+    "queryId": 123456,
+    "scanProjection": [
+        true,
+        true,
+        true,
+        true,
+        true
+    ],
+    "tableInfo": {
+        "base": true,
+        "columnsToRead": [
+            "o_orderkey",
+            "o_custkey",
+            "o_orderstatus",
+            "o_orderpriority",
+            "o_totalprice"
+        ],
+        "filter": [
+            "{\"schemaName\":\"tpch\",\"tableName\":\"orders\",\"columnFilters\":{3:{\"columnName\":\"o_orderpriority\",\"columnType\":\"CHAR\",\"filterJson\":\"{\\\"javaType\\\":\\\"java.lang.String\\\",\\\"isAll\\\":false,\\\"isNone\\\":false,\\\"allowNull\\\":false,\\\"onlyNull\\\":false,\\\"ranges\\\":[],\\\"discreteValues\\\":[{\\\"type\\\":\\\"INCLUDED\\\",\\\"value\\\":\\\"3-MEDIUM\\\"}]}\"}}}",
+            "{\"schemaName\":\"tpch\",\"tableName\":\"orders\",\"columnFilters\":{2:{\"columnName\":\"o_orderstatus\",\"columnType\":\"CHAR\",\"filterJson\":\"{\\\"javaType\\\":\\\"java.lang.String\\\",\\\"isAll\\\":false,\\\"isNone\\\":false,\\\"allowNull\\\":false,\\\"onlyNull\\\":false,\\\"ranges\\\":[],\\\"discreteValues\\\":[{\\\"type\\\":\\\"INCLUDED\\\",\\\"value\\\":\\\"P\\\"}]}\"}}}"
+        ],
+        "inputSplits": [
+            {
+                "inputInfos": [
+                    {
+                        "path": "jingrong-test/orders/v-0-order/20230425100755_24.pxl",
+                        "rgLength": -1,
+                        "rgStart": 0
+                    }
+                ]
+            },
+            {
+                "inputInfos": [
+                    {
+                        "path": "jingrong-test/orders/v-0-order/20230425100758_25.pxl",
+                        "rgLength": -1,
+                        "rgStart": 0
+                    }
+                ]
+            },
+            {
+                "inputInfos": [
+                    {
+                        "path": "jingrong-test/orders/v-0-order/20230425100802_26.pxl",
+                        "rgLength": -1,
+                        "rgStart": 0
+                    }
+                ]
+            },
+            {
+                "inputInfos": [
+                    {
+                        "path": "jingrong-test/orders/v-0-order/20230425100804_27.pxl",
+                        "rgLength": -1,
+                        "rgStart": 0
+                    }
+                ]
+            },
+            {
+                "inputInfos": [
+                    {
+                        "path": "jingrong-test/orders/v-0-order/20230425100901_50.pxl",
+                        "rgLength": -1,
+                        "rgStart": 0
+                    }
+                ]
+            },
+            {
+                "inputInfos": [
+                    {
+                        "path": "jingrong-test/orders/v-0-order/20230425100903_51.pxl",
+                        "rgLength": -1,
+                        "rgStart": 0
+                    }
+                ]
+            },
+            {
+                "inputInfos": [
+                    {
+                        "path": "jingrong-test/orders/v-0-order/20230425101013_80.pxl",
+                        "rgLength": -1,
+                        "rgStart": 0
+                    }
+                ]
+            },
+            {
+                "inputInfos": [
+                    {
+                        "path": "jingrong-test/orders/v-0-order/20230425101016_81.pxl",
+                        "rgLength": -1,
+                        "rgStart": 0
+                    }
+                ]
+            }
+        ],
+        "storageInfo": {
+            "scheme": "s3"
+        },
+        "tableName": "orders"
+    }
+}
