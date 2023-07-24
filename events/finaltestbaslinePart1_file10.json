@@ -52,7 +52,7 @@
         {
             "inputInfos": [
                 {
-                    "path": "jingrong-test/orders/v-0-order/20230425100657_1.pxl",
+                    "path": "jingrong-test/tpch/orders/v-0-order/20230425100657_1.pxl",
                     "rgLength": -1,
                     "rgStart": 0
                 }
@@ -61,7 +61,7 @@
         {
             "inputInfos": [
                 {
-                    "path": "jingrong-test/orders/v-0-order/20230425100700_2.pxl",
+                    "path": "jingrong-test/tpch/orders/v-0-order/20230425100700_2.pxl",
                     "rgLength": -1,
                     "rgStart": 0
                 }
@@ -70,7 +70,7 @@
         {
             "inputInfos": [
                 {
-                    "path": "jingrong-test/orders/v-0-order/20230425100703_3.pxl",
+                    "path": "jingrong-test/tpch/orders/v-0-order/20230425100703_3.pxl",
                     "rgLength": -1,
                     "rgStart": 0
                 }
@@ -79,7 +79,7 @@
         {
             "inputInfos": [
                 {
-                    "path": "jingrong-test/orders/v-0-order/20230425100705_4.pxl",
+                    "path": "jingrong-test/tpch/orders/v-0-order/20230425100705_4.pxl",
                     "rgLength": -1,
                     "rgStart": 0
                 }
@@ -88,7 +88,7 @@
         {
             "inputInfos": [
                 {
-                    "path": "jingrong-test/orders/v-0-order/20230425100708_5.pxl",
+                    "path": "jingrong-test/tpch/orders/v-0-order/20230425100708_5.pxl",
                     "rgLength": -1,
                     "rgStart": 0
                 }
@@ -97,7 +97,7 @@
         {
             "inputInfos": [
                 {
-                    "path": "jingrong-test/orders/v-0-order/20230425100710_6.pxl",
+                    "path": "jingrong-test/tpch/orders/v-0-order/20230425100710_6.pxl",
                     "rgLength": -1,
                     "rgStart": 0
                 }
@@ -106,7 +106,7 @@
         {
             "inputInfos": [
                 {
-                    "path": "jingrong-test/orders/v-0-order/20230425100712_7.pxl",
+                    "path": "jingrong-test/tpch/orders/v-0-order/20230425100712_7.pxl",
                     "rgLength": -1,
                     "rgStart": 0
                 }
@@ -115,7 +115,7 @@
         {
             "inputInfos": [
                 {
-                    "path": "jingrong-test/orders/v-0-order/20230425100715_8.pxl",
+                    "path": "jingrong-test/tpch/orders/v-0-order/20230425100715_8.pxl",
                     "rgLength": -1,
                     "rgStart": 0
                 }
@@ -124,7 +124,7 @@
         {
             "inputInfos": [
                 {
-                    "path": "jingrong-test/orders/v-0-order/20230425100717_9.pxl",
+                    "path": "jingrong-test/tpch/orders/v-0-order/20230425100717_9.pxl",
                     "rgLength": -1,
                     "rgStart": 0
                 }

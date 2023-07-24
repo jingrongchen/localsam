@@ -1,10 +1,5 @@
-jingrong-test/orders/v-0-order/20230425100657_1.pxl
-jingrong-test/orders/v-0-order/20230425100700_2.pxl
-jingrong-test/orders/v-0-order/20230425100703_3.pxl
-jingrong-test/orders/v-0-order/20230425100705_4.pxl
-jingrong-test/orders/v-0-order/20230425100708_5.pxl
-jingrong-test/orders/v-0-order/20230425100710_6.pxl
-jingrong-test/orders/v-0-order/20230425100712_7.pxl
-jingrong-test/orders/v-0-order/20230425100715_8.pxl
-jingrong-test/orders/v-0-order/20230425100717_9.pxl
-jingrong-test/orders/v-0-order/20230425100720_10.pxl
+jingrong-test/tpch/orders/v-0-order/20230425100657_1.pxl
+jingrong-test/tpch/orders/v-0-order/20230425100700_2.pxl
+jingrong-test/tpch/orders/v-0-order/20230425100703_3.pxl
+jingrong-test/tpch/orders/v-0-order/20230425100705_4.pxl
+jingrong-test/tpch/orders/v-0-order/20230425100708_5.pxl

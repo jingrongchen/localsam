@@ -48,7 +48,7 @@ public class ResultTest
     @Test
     public void BaseResponse()
     {
-        String currentPath = "s3://jingrong-lambda-test/unit_tests/test_scan1/123456_scan_0";
+        String currentPath = "s3://jingrong-test/tpch/customer/v-0-order/20230425092143_0.pxl";
         try {
 
             StorageFactory storagefactory = StorageFactory.Instance();
@@ -98,4 +98,11 @@ public class ResultTest
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void justest(){
+
+        System.out.println("test result : "+ 5/3);
+    }
+
 }

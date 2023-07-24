@@ -6,6 +6,6 @@ mvn clean install
 cd /home/ubuntu/opt/lambda-java8
 rm -r .aws-sam
 cd HelloWorldFunction
-mvn clean
+mvn clean package
 cd ..
 sam build

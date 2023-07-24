@@ -15,9 +15,10 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 
 import io.pixelsdb.pixels.worker.common.BasePartitionWorker;
 import io.pixelsdb.pixels.worker.common.WorkerContext;
-import org.slf4j.Logger;
 import io.pixelsdb.pixels.worker.common.WorkerMetrics;
-import org.slf4j.LoggerFactory;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Joiner;
@@ -54,9 +55,9 @@ import static java.util.Objects.requireNonNull;
 
 public class App implements RequestHandler<ThreadScanInput, ScanOutput>
 {
-    private static final Logger logger = LoggerFactory.getLogger(App.class);
+    private static final Logger logger = LogManager.getLogger(App.class);
     private final WorkerMetrics workerMetrics = new WorkerMetrics();
-
+    
     @Override
     public ScanOutput handleRequest(ThreadScanInput event, Context context)
     {

@@ -90,7 +90,7 @@
         {
           "inputInfos": [
             {
-              "path": "jingrong-test/orders/v-0-order/20230425100901_50.pxl",
+              "path": "jingrong-test/tpch/orders/v-0-order/20230425100901_50.pxl",
               "rgLength": -1,
               "rgStart": 0
             }
@@ -99,7 +99,7 @@
         {
           "inputInfos": [
             {
-              "path": "jingrong-test/orders/v-0-order/20230425100903_51.pxl",
+              "path": "jingrong-test/tpch/orders/v-0-order/20230425100903_51.pxl",
               "rgLength": -1,
               "rgStart": 0
             }
@@ -108,7 +108,7 @@
         {
           "inputInfos": [
             {
-              "path": "jingrong-test/orders/v-0-order/20230425100906_52.pxl",
+              "path": "jingrong-test/tpch/orders/v-0-order/20230425100906_52.pxl",
               "rgLength": -1,
               "rgStart": 0
             }
@@ -117,7 +117,7 @@
         {
           "inputInfos": [
             {
-              "path": "jingrong-test/orders/v-0-order/20230425100908_53.pxl",
+              "path": "jingrong-test/tpch/orders/v-0-order/20230425100908_53.pxl",
               "rgLength": -1,
               "rgStart": 0
             }
@@ -126,7 +126,7 @@
         {
           "inputInfos": [
             {
-              "path": "jingrong-test/orders/v-0-order/20230425100911_54.pxl",
+              "path": "jingrong-test/tpch/orders/v-0-order/20230425100911_54.pxl",
               "rgLength": -1,
               "rgStart": 0
             }
@@ -135,7 +135,7 @@
         {
           "inputInfos": [
             {
-              "path": "jingrong-test/orders/v-0-order/20230425100913_55.pxl",
+              "path": "jingrong-test/tpch/orders/v-0-order/20230425100913_55.pxl",
               "rgLength": -1,
               "rgStart": 0
             }
@@ -144,7 +144,7 @@
         {
           "inputInfos": [
             {
-              "path": "jingrong-test/orders/v-0-order/20230425100916_56.pxl",
+              "path": "jingrong-test/tpch/orders/v-0-order/20230425100916_56.pxl",
               "rgLength": -1,
               "rgStart": 0
             }
@@ -153,7 +153,7 @@
         {
           "inputInfos": [
             {
-              "path": "jingrong-test/orders/v-0-order/20230425100918_57.pxl",
+              "path": "jingrong-test/tpch/orders/v-0-order/20230425100918_57.pxl",
               "rgLength": -1,
               "rgStart": 0
             }
@@ -162,7 +162,7 @@
         {
           "inputInfos": [
             {
-              "path": "jingrong-test/orders/v-0-order/20230425100921_58.pxl",
+              "path": "jingrong-test/tpch/orders/v-0-order/20230425100921_58.pxl",
               "rgLength": -1,
               "rgStart": 0
             }
@@ -171,7 +171,7 @@
         {
           "inputInfos": [
             {
-              "path": "jingrong-test/orders/v-0-order/20230425100923_59.pxl",
+              "path": "jingrong-test/tpch/orders/v-0-order/20230425100923_59.pxl",
               "rgLength": -1,
               "rgStart": 0
             }
