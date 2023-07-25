@@ -31,6 +31,9 @@ import io.pixelsdb.pixels.core.reader.PixelsRecordReader;
 import io.pixelsdb.pixels.core.vector.VectorizedRowBatch;
 import java.io.IOException;
 import java.util.List;
+
+import javax.print.event.PrintJobListener;
+
 import io.pixelsdb.pixels.worker.common.WorkerCommon;
 import org.junit.Test;
 import io.pixelsdb.pixels.planner.plan.physical.domain.StorageInfo;
@@ -48,7 +51,7 @@ public class ResultTest
     @Test
     public void BaseResponse()
     {
-        String currentPath = "s3://jingrong-test/tpch/customer/v-0-order/20230425092143_0.pxl";
+        String currentPath = "s3://jingrong-lambda-test/unit_tests/intermediate_result/customer_partition/Part_0";
         try {
 
             StorageFactory storagefactory = StorageFactory.Instance();
@@ -59,6 +62,8 @@ public class ResultTest
            
             TypeDescription schema = reader.getFileSchema();
             List<String> fieldNames = schema.getFieldNames();
+
+            System.out.println(fieldNames);
             String[] cols = new String[fieldNames.size()];
             for (int i = 0; i < fieldNames.size(); i++) {
                 cols[i] = fieldNames.get(i);
