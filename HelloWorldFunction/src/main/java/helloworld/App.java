@@ -53,16 +53,58 @@ import static java.util.Objects.requireNonNull;
 //     }
 // }
 
-public class App implements RequestHandler<ThreadScanInput, ScanOutput>
-{
-    private static final Logger logger = LogManager.getLogger(App.class);
-    private final WorkerMetrics workerMetrics = new WorkerMetrics();
+// public class App implements RequestHandler<ThreadScanInput, ScanOutput>
+// {
+//     private static final Logger logger = LogManager.getLogger(App.class);
+//     private final WorkerMetrics workerMetrics = new WorkerMetrics();
     
+//     @Override
+//     public ScanOutput handleRequest(ThreadScanInput event, Context context)
+//     {
+//         WorkerContext workerContext = new WorkerContext(logger, workerMetrics, context.getAwsRequestId());
+//         BaseThreadScanWorker baseWorker = new BaseThreadScanWorker(workerContext);
+//         return baseWorker.process(event);
+//     }
+
+// }
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+
+
+public class App implements RequestHandler<Object, String> {
+
     @Override
-    public ScanOutput handleRequest(ThreadScanInput event, Context context)
-    {
-        WorkerContext workerContext = new WorkerContext(logger, workerMetrics, context.getAwsRequestId());
-        BaseThreadScanWorker baseWorker = new BaseThreadScanWorker(workerContext);
-        return baseWorker.process(event);
+    public String handleRequest(Object input, Context context) {
+        String fileName = "/tmp/myfile.txt";
+        
+        try {
+            // Create a FileWriter with the specified file name
+            FileWriter fileWriter = new FileWriter(fileName);
+
+            // Wrap the FileWriter in a BufferedWriter for efficient writing
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+            // Write some content to the file
+            bufferedWriter.write("Hello, AWS Lambda!");
+            bufferedWriter.newLine();  // Add a new line
+
+            // Close the buffered writer
+            bufferedWriter.close();
+            System.out.println("File written successfully.");
+
+            // reads the tmp file
+            BufferedReader br = new BufferedReader(new InputStreamReader(new URL("file:///tmp/myfile.txt").openStream()));
+            String content = br.lines().collect(Collectors.joining(System.lineSeparator()));
+            System.out.println(content);
+            System.out.println("File read successfully.");
+
+            return "File written successfully.";
+        } catch (IOException e) {
+            // Handle any errors
+            return "Error writing file: " + e.getMessage();
+        }
     }
 }
+
+

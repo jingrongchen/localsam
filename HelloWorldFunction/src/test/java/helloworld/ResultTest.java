@@ -1,6 +1,9 @@
 package helloworld;
 
 import io.pixelsdb.pixels.common.metadata.domain.Schema;
+import io.pixelsdb.pixels.core.PixelsProto;
+import io.pixelsdb.pixels.core.PixelsProto.Type;
+import io.pixelsdb.pixels.core.PixelsFooterCache;
 /*
  * Copyright 2018 PixelsDB.
  *
@@ -51,13 +54,11 @@ public class ResultTest
     @Test
     public void BaseResponse()
     {
-        String currentPath = "s3://jingrong-lambda-test/unit_tests/intermediate_result/customer_partition/Part_0";
+        String currentPath = "s3://jingrong-lambda-test/unit_tests/intermediate_result/testlineitem/part0";
         try {
 
             StorageFactory storagefactory = StorageFactory.Instance();
-
             Storage storage =storagefactory.getStorage(currentPath);
-            
             PixelsReader reader=WorkerCommon.getReader(currentPath,storage);
            
             TypeDescription schema = reader.getFileSchema();
@@ -74,7 +75,7 @@ public class ResultTest
             option.tolerantSchemaEvolution(true);
             option.includeCols(cols);
             PixelsRecordReader recordReader = reader.read(option);
-            System.out.println(recordReader.getCompletedRows());
+            System.out.println(reader.getRowGroupStats().size());
             // System.out.println(reader.getRowGroupInfo(0).getNumberOfRows());
             int batchSize = 10;
             VectorizedRowBatch rowBatch;
@@ -82,13 +83,14 @@ public class ResultTest
             int num = 0;
             int row = 0;
 
-            for(int i=0;i<10;i++){
+            for(int i=0;i<100;i++){
                 rowBatch = recordReader.readBatch(batchSize);
-                System.out.println(rowBatch);
+                // System.out.println(rowBatch);
                 row++;
                 String result = rowBatch.toString();
-                len += result.length();
-                System.out.println("loop:" + row + "," + rowBatch.size);
+                System.out.println(result);
+                // len += result.length();
+                // System.out.println("loop:" + row + "," + rowBatch.size);
                 if (rowBatch.endOfFile) {
                     num += rowBatch.size;
                     break;
@@ -108,6 +110,41 @@ public class ResultTest
     public void justest(){
 
         System.out.println("test result : "+ 5/3);
+    }
+
+    @Test
+    public void testMetadata()
+    {   
+        String path="s3://jingrong-lambda-test/unit_tests/testcombinepartition/customer_orders_partitioned/partitioned_join_customer_orders";
+        // String path = "s3://jingrong-lambda-test/unit_tests/intermediate_result/customer_orders_lineitem_partitionjoin/part_0";
+        PixelsReader reader;
+        try
+        {
+            Storage storage = StorageFactory.Instance().getStorage("s3");
+            reader = PixelsReaderImpl.newBuilder()
+                    .setStorage(storage)
+                    .setPath(path)
+                    .setPixelsFooterCache(new PixelsFooterCache())
+                    .build();
+
+            List<PixelsProto.Type> types = reader.getFooter().getTypesList();
+            for (PixelsProto.Type type : types)
+            {
+                System.out.println(type);
+            }
+            System.out.println(reader.getRowGroupStats().size());
+
+            // System.out.println(reader.getRowGroupInfo(3).getNumberOfRows());
+
+
+
+
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
     }
 
 }
