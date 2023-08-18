@@ -115,8 +115,8 @@ public class ResultTest
     @Test
     public void testMetadata()
     {   
-        String path="s3://jingrong-lambda-test/unit_tests/testcombinepartition/customer_orders_partitioned/partitioned_join_customer_orders";
-        // String path = "s3://jingrong-lambda-test/unit_tests/intermediate_result/customer_orders_lineitem_partitionjoin/part_0";
+        String path="s3://jingrong-lambda-test/unit_tests/intermediate_result/lineitem_partition/Part_0";
+        // String path = "s3://jingrong-lambd a-test/unit_tests/intermediate_result/customer_orders_lineitem_partitionjoin/part_0";
         PixelsReader reader;
         try
         {

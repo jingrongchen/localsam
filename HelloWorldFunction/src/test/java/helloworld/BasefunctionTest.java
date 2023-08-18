@@ -41,7 +41,10 @@ import io.pixelsdb.pixels.planner.plan.physical.input.BroadcastJoinInput;
 import io.pixelsdb.pixels.planner.plan.physical.domain.BroadcastTableInfo;
 import io.pixelsdb.pixels.planner.plan.physical.domain.JoinInfo;
 public class BasefunctionTest {
-    
+
+
+
+        
     @Test
     public void testBaseScan(){
 

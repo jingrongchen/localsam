@@ -23,7 +23,7 @@ public class Common {
                 // System.out.println("storagepath: " + storagepath);
                 Storage storage = StorageFactory.Instance().getStorage(storagepath);
                 filePath = storage.listPaths(storagepath);
-                System.out.println(filePath);
+                // System.out.println(filePath);
                 tableToInputSplits.put(tableName, filePath);
                 
         } catch (Exception e) {

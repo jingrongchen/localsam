@@ -84,7 +84,7 @@ import io.pixelsdb.pixels.executor.predicate.Range;
 
 public class AppTest {
 
-        public ImmutableTriple<Boolean, List<PartitionOutput>,List<FusionOutput>> FirstStage(boolean local,boolean enablePartition,boolean enableScan,HashMap<String, List<InputSplit>> tableToInputSplits,int filePerCf,int scanpartition,int numOfPartition) {
+        public ImmutableTriple<Boolean, List<PartitionOutput>,List<FusionOutput>> FirstStage(boolean local,boolean enablePartition,boolean enableScan,HashMap<String, List<InputSplit>> tableToInputSplits,int filePerCf,int scanpartition,int numOfPartition,int lineitemPartitionNum) {
                 
                 List<CompletableFuture<PartitionOutput>> partitionFuture = new ArrayList<CompletableFuture<PartitionOutput>>();
                 List<CompletableFuture<FusionOutput>> futures = new ArrayList<CompletableFuture<FusionOutput>>();
@@ -193,7 +193,7 @@ public class AppTest {
                 rightPartitionInfo.setProjection(new boolean[] { true, true });
                 PartitionInfo fusionpartitionInfo = new PartitionInfo();
                 fusionpartitionInfo.setKeyColumnIds(new int[] { 0 });
-                fusionpartitionInfo.setNumPartition(numOfPartition);
+                fusionpartitionInfo.setNumPartition(lineitemPartitionNum);
                 rightPartitionInfo.setPartitionInfo(fusionpartitionInfo);
                 
                 //set scan pipeline info
@@ -509,7 +509,7 @@ public class AppTest {
                 // name: "l_quantity"
 
                 rightTableInfo.setInputFiles(stage3Files.get("lineitem_partition"));
-                rightTableInfo.setParallelism(2);
+                rightTableInfo.setParallelism(8);
                 rightTableInfo.setBase(false);
                 rightTableInfo.setStorageInfo(new StorageInfo(Storage.Scheme.s3, null, null, null, null));
                 joinInput.setLargeTable(rightTableInfo);
@@ -550,7 +550,7 @@ public class AppTest {
 
 
                 // now do the partition for aggregation result
-                int agg_parNum = 80;
+                int agg_parNum = 40;
 
                 String leftFilter ="{\"schemaName\":\"tpch\",\"tableName\":\"aggregate_lineitem\"," +
                         "\"columnFilters\":{1:{\"columnName\":\"SUM_l_quantity\",\"columnType\":\"LONG\"," +
@@ -836,10 +836,10 @@ public class AppTest {
                 String pixelsHome = System.getenv("PIXELS_HOME");
                 
                 // Chose local or cloud
-                boolean test=false;
+                // int functionUSED = 0;
                 boolean local = false;
-                int numOfPartition = 40;
-                int numOfPostPartition = 80;
+                int numOfPartition = 20;
+                int numOfPostPartition = 20;
                 int numOfScanPartition = 40;
                 //prepraing the input
                 HashMap<String, List<InputSplit>> tableToInputSplits = Common.getTableToInputSplits(Arrays.asList("customer","lineitem","orders"));
@@ -849,7 +849,7 @@ public class AppTest {
 
                 //numof partition is for customer and orders
                 //numof post partition is for lineitem
-                ImmutableTriple<Boolean, List<PartitionOutput>,List<FusionOutput>> stageOneOUT = FirstStage(local,true,true,tableToInputSplits,15,numOfScanPartition,numOfPartition);
+                ImmutableTriple<Boolean, List<PartitionOutput>,List<FusionOutput>> stageOneOUT = FirstStage(local,true,true,tableToInputSplits,15,numOfScanPartition,numOfPartition,numOfPostPartition);
                 boolean boolstageOne=stageOneOUT.getLeft();
 
                 /*
@@ -925,7 +925,7 @@ public class AppTest {
                         }
 
                         // stage always has 1 full aggregation
-                        ImmutableTriple<Boolean, List<JoinOutput>,List<AggregationOutput>> stageTwo = SecondStage(local,stage2Files, testHashvalues,numOfPartition,40,numOfPartition,numOfPostPartition);
+                        ImmutableTriple<Boolean, List<JoinOutput>,List<AggregationOutput>> stageTwo = SecondStage(local,stage2Files, testHashvalues,20,40,numOfPartition,numOfPostPartition);
                         for(JoinOutput out:stageTwo.getMiddle()){
                                 customer_orders_partitionjoin.addAll(out.getOutputs());
                         }
@@ -971,7 +971,7 @@ public class AppTest {
                                 testHashvalues.add(i);
                         }
 
-                        ImmutablePair<Boolean, List<JoinOutput>> stageThree = ThirdStage(local,stage3Files, testHashvalues, 40,40,80,numOfPostPartition);
+                        ImmutablePair<Boolean, List<JoinOutput>> stageThree = ThirdStage(local,stage3Files, testHashvalues, 20,20,numOfPartition,numOfPostPartition);
                         for(JoinOutput out:stageThree.getRight()){
                                 Stage4inputs.addAll(out.getOutputs());
                         }
@@ -1003,6 +1003,7 @@ public class AppTest {
                 System.out.println("All stages success!!!!");
                 
                 long endTime   = System.nanoTime();
+                System.out.println("cloud function been called");
                 System.out.println("Cloud function Q18 runtime: " + (endTime - startTime)/1000000 + "ms");
 
 
@@ -1010,8 +1011,6 @@ public class AppTest {
 
         }
 
-       
-        
                  // String leftFilter ="{\"schemaName\":\"tpch\",\"tableName\":\"aggregate_lineitem\"," +
                 //         "\"columnFilters\":{1:{\"columnName\":\"SUM_l_quantity\",\"columnType\":\"LONG\"," +
                 //         "\"filterJson\":\"{\\\"javaType\\\":\\\"long\\\",\\\"isAll\\\":false," +
