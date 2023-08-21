@@ -117,7 +117,9 @@ public class CombinePartitionTest {
         ScanTableInfo tableInfo2 = new ScanTableInfo();
         tableInfo2.setTableName("orders");
         tableInfo2.setInputSplits(Arrays.asList(
-                    new InputSplit(Arrays.asList(new InputInfo("s3://jingrong-lambda-test/tpch/orders/v-0-ordered/20230801082419_47.pxl", 0, -1)))));
+                    new InputSplit(Arrays.asList(new InputInfo("s3://jingrong-lambda-test/tpch/orders/v-0-ordered/20230801082419_47.pxl", 0, -1))),
+                    new InputSplit(Arrays.asList(new InputInfo("s3://jingrong-lambda-test/tpch/orders/v-0-ordered/20230801082422_48.pxl", 0, -1)))
+                    ));
         tableInfo2.setFilter(ordersFilter);
         tableInfo2.setBase(true);
         tableInfo2.setColumnsToRead(new String[] { "o_orderkey","o_custkey","o_orderdate","o_totalprice"});
@@ -153,7 +155,7 @@ public class CombinePartitionTest {
         input2.setLargeTable(rightTableInfo);
 
         List<Integer> hashValues = new ArrayList<Integer>();
-        for (int i = 0 ; i < 2; ++i)
+        for (int i = 0 ; i < 1; ++i)
         {
             hashValues.add(i);
         }
@@ -176,14 +178,14 @@ public class CombinePartitionTest {
         new StorageInfo(Storage.Scheme.s3, null, null, null, null),
         false, Arrays.asList("partitioned_join_customer_orders")));
 
-        List<Integer> localhashValues = new ArrayList<Integer>();
-        localhashValues.add(0);
-        input2.setLocalHashedPartitionIds(localhashValues);
+        // List<Integer> localhashValues = new ArrayList<Integer>();
+        // localhashValues.add(0);
+        // input2.setLocalHashedPartitionIds(localhashValues);
         input2.setIntermideatePath("s3://jingrong-lambda-test/unit_tests/testcombinepartition/");
         input2.setBigTableName("orders");
         input2.setSmallTableName("customer");
         input2.setSmallTablePartitionCount(1);
-        input2.setBigTablePartitionCount(1);
+        input2.setBigTablePartitionCount(3);
 
         try {
             Output output = invokerLocal.invokeLocalPartition(input).get();
@@ -198,4 +200,38 @@ public class CombinePartitionTest {
 }
 
 
+    @Test
+    public void testAddpartition(){
+        String ordersFilter = "{\"schemaName\":\"tpch\",\"tableName\":\"orders\",\"columnFilters\":{}}";
+        PartitionInput input2 = new CombinedPartitionInput();
+        input2.setTransId(123456);
+        ScanTableInfo tableInfo2 = new ScanTableInfo();
+        tableInfo2.setTableName("orders");
+        tableInfo2.setInputSplits(Arrays.asList(
+                    new InputSplit(Arrays.asList(new InputInfo("s3://jingrong-lambda-test/tpch/orders/v-0-ordered/20230801082419_47.pxl", 0, -1))),
+                    new InputSplit(Arrays.asList(new InputInfo("s3://jingrong-lambda-test/tpch/orders/v-0-ordered/20230801082422_48.pxl", 0, -1)))
+                    ));
+        tableInfo2.setFilter(ordersFilter);
+        tableInfo2.setBase(true);
+        tableInfo2.setColumnsToRead(new String[] { "o_orderkey","o_custkey","o_orderdate","o_totalprice"});
+        tableInfo2.setStorageInfo(new StorageInfo(Storage.Scheme.s3, null, null, null, null));
+        input2.setTableInfo(tableInfo2);
+        input2.setProjection(new boolean[] { true, true, true, true });
+        PartitionInfo partitionInfo2 = new PartitionInfo();
+        partitionInfo2.setNumPartition(2);
+        partitionInfo2.setKeyColumnIds(new int[] {1});
+        input2.setPartitionInfo(partitionInfo2);
+        input2.setOutput(new OutputInfo("jingrong-lambda-test/unit_tests/testcombinepartition/orders_partition/Part_1",
+        new StorageInfo(Storage.Scheme.s3, null, null, null, null), false));
+        InvokerLocal invokerLocal= new InvokerLocal();
+        try {
+            Output output2 = invokerLocal.invokeLocalPartition(input2).get();
+            System.out.println(JSON.toJSONString(output2));
+        } catch (Exception e) {
+            System.out.println("Stage one failed!");
+            return;
+        }
+        // invokerLocal.invokeLocalPartition(input2).get();
+
+    }
 }
