@@ -84,8 +84,17 @@ import io.pixelsdb.pixels.executor.predicate.Range;
 
 public class AppTest {
 
+        private long cumulativeComputeCostMs;
+        private long cumulativeInputCostMs;
+        private long cumulativeOutputCostMs;
+        private long cumulativeDurationMs;
+        private long cumulativeMemoryMB;
+        
+        private long cumulativeReadBytes;
+        private long cumulativeWriteBytes;
+
+
         public ImmutableTriple<Boolean, List<PartitionOutput>,List<FusionOutput>> FirstStage(boolean local,boolean enablePartition,boolean enableScan,HashMap<String, List<InputSplit>> tableToInputSplits,int filePerCf,int scanpartition,int numOfPartition,int lineitemPartitionNum) {
-                
                 List<CompletableFuture<PartitionOutput>> partitionFuture = new ArrayList<CompletableFuture<PartitionOutput>>();
                 List<CompletableFuture<FusionOutput>> futures = new ArrayList<CompletableFuture<FusionOutput>>();
                 List<CompletableFuture<Output>> CloudFuture = new ArrayList<CompletableFuture<Output>>();
@@ -172,8 +181,6 @@ public class AppTest {
                         }
                 }
 
-
-                
                 /**
                  * scan and partition table info
                  */
@@ -271,6 +278,16 @@ public class AppTest {
                         for(CompletableFuture<Output> future: CloudFuture){
                                 try {
                                         Output result = future.get();
+
+                                        cumulativeComputeCostMs += result.getCumulativeComputeCostMs();
+                                        cumulativeInputCostMs += result.getCumulativeInputCostMs();
+                                        cumulativeOutputCostMs += result.getCumulativeOutputCostMs();
+                                        cumulativeDurationMs += result.getDurationMs();
+
+                                        cumulativeMemoryMB += result.getMemoryMB();
+                                        cumulativeReadBytes += result.getTotalReadBytes();
+                                        cumulativeWriteBytes += result.getTotalWriteBytes();
+
                                         if (result instanceof PartitionOutput){
                                                 partitionOutputs.add((PartitionOutput)result);
                                         }else{
@@ -284,7 +301,7 @@ public class AppTest {
 
                 System.out.println("finish the first stage, writing the outputs");
                 
-                ImmutableTriple<Boolean, List<PartitionOutput>,List<FusionOutput>> result = new ImmutableTriple(true, partitionOutputs,fusionOutputs);
+                ImmutableTriple<Boolean, List<PartitionOutput>,List<FusionOutput>> result = new ImmutableTriple(true, partitionOutputs, fusionOutputs);
                 return result;
         }
 
@@ -427,6 +444,15 @@ public class AppTest {
                         for(CompletableFuture<Output> future: Cloudfutures){
                                 try {
                                         Output result = future.get();
+                                        cumulativeComputeCostMs += result.getCumulativeComputeCostMs();
+                                        cumulativeInputCostMs += result.getCumulativeInputCostMs();
+                                        cumulativeOutputCostMs += result.getCumulativeOutputCostMs();
+                                        cumulativeDurationMs += result.getDurationMs();
+                        
+                                        cumulativeMemoryMB += result.getMemoryMB();
+                                        cumulativeReadBytes += result.getTotalReadBytes();
+                                        cumulativeWriteBytes += result.getTotalWriteBytes();
+                                        
                                         if (result instanceof JoinOutput){
                                                 joinOutput.add((JoinOutput)result);
                                                 // System.out.println(JSON.toJSONString((JoinOutput)result));
@@ -537,8 +563,8 @@ public class AppTest {
                         joinInput.setOutput(new MultiOutputInfo("jingrong-lambda-test/unit_tests/intermediate_result/customer_orders_lineitem_partitionjoin/",
                         new StorageInfo(Storage.Scheme.s3, null, null, null, null),
                         false, Arrays.asList("part_"+cf_num))); // force one file currently
+                        
                         secondStageFiles.add("jingrong-lambda-test/unit_tests/intermediate_result/customer_orders_lineitem_partitionjoin/part_"+cf_num);
-
                         if(islocal){
                                 futures.add(InvokerLocal.invokeLocalPartitionJoin(joinInput));
                         }
@@ -550,7 +576,7 @@ public class AppTest {
 
 
                 // now do the partition for aggregation result
-                int agg_parNum = 40;
+                // int agg_parNum = 40;
 
                 String leftFilter ="{\"schemaName\":\"tpch\",\"tableName\":\"aggregate_lineitem\"," +
                         "\"columnFilters\":{1:{\"columnName\":\"SUM_l_quantity\",\"columnType\":\"LONG\"," +
@@ -569,7 +595,7 @@ public class AppTest {
                 tableInfo.setStorageInfo(new StorageInfo(Storage.Scheme.s3, null, null, null, null));
                 input.setProjection(new boolean[] { true, true });
                 PartitionInfo partitionInfo = new PartitionInfo();
-                partitionInfo.setNumPartition(agg_parNum);
+                partitionInfo.setNumPartition(numOfPartition);
                 partitionInfo.setKeyColumnIds(new int[] {0});
                 input.setPartitionInfo(partitionInfo);
 
@@ -610,6 +636,9 @@ public class AppTest {
                                         try {
                                                 PartitionOutput result = parfuture.get();
                                                 // partitionOutputs.add(result);
+
+
+                                                
                                                 System.out.println(JSON.toJSONString(result));
                                         } catch (Exception e) {
                                                 e.printStackTrace();
@@ -631,6 +660,17 @@ public class AppTest {
                                 for(CompletableFuture<Output> future:Cloudfutures){
                                         try{
                                                 Output result = future.get();
+                                                cumulativeComputeCostMs += result.getCumulativeComputeCostMs();
+                                                cumulativeInputCostMs += result.getCumulativeInputCostMs();
+                                                cumulativeOutputCostMs += result.getCumulativeOutputCostMs();
+                                                cumulativeDurationMs += result.getDurationMs();
+
+                                                cumulativeMemoryMB += result.getMemoryMB();
+                                                cumulativeReadBytes += result.getTotalReadBytes();
+                                                cumulativeWriteBytes += result.getTotalWriteBytes();
+
+
+
                                                 if (result instanceof JoinOutput){
                                                         // joinOutput.add((JoinOutput)result);
                                                         System.out.println(JSON.toJSONString((JoinOutput)result));
@@ -663,7 +703,7 @@ public class AppTest {
                 leftTableInfo2.setTableName("aggregation_result");
                 leftTableInfo2.setColumnsToRead(new String[]{"l_orderkey","SUM_l_quantity"});
                 leftTableInfo2.setKeyColumnIds(new int[]{0});
-                leftTableInfo2.setParallelism(20);
+                leftTableInfo2.setParallelism(8);
                 leftTableInfo2.setBase(false);
                 leftTableInfo2.setStorageInfo(new StorageInfo(Storage.Scheme.s3, null, null, null, null));
                 leftTableInfo2.setInputFiles(aggregation_result_partition);
@@ -733,6 +773,16 @@ public class AppTest {
                         for(CompletableFuture<Output> future:Cloudfutures){
                                 try{
                                         Output result = future.get();
+
+                                        cumulativeComputeCostMs += result.getCumulativeComputeCostMs();
+                                        cumulativeInputCostMs += result.getCumulativeInputCostMs();
+                                        cumulativeOutputCostMs += result.getCumulativeOutputCostMs();
+                                        cumulativeDurationMs += result.getDurationMs();
+
+                                        cumulativeMemoryMB += result.getMemoryMB();
+                                        cumulativeReadBytes += result.getTotalReadBytes();
+                                        cumulativeWriteBytes += result.getTotalWriteBytes();
+
                                         if (result instanceof JoinOutput){
                                                 joinOutput.add((JoinOutput)result);
                                         }
@@ -816,6 +866,14 @@ public class AppTest {
                         for(CompletableFuture<Output> future:Cloudfutures){
                                 try{
                                         Output result = future.get();
+                                        cumulativeComputeCostMs += result.getCumulativeComputeCostMs();
+                                        cumulativeInputCostMs += result.getCumulativeInputCostMs();
+                                        cumulativeOutputCostMs += result.getCumulativeOutputCostMs();
+                                        cumulativeDurationMs += result.getDurationMs();
+
+                                        cumulativeMemoryMB += result.getMemoryMB();
+                                        cumulativeReadBytes += result.getTotalReadBytes();
+                                        cumulativeWriteBytes += result.getTotalWriteBytes();
                                         if (result instanceof AggregationOutput){
                                                 System.out.println(JSON.toJSONString((AggregationOutput)result));
                                         }
@@ -830,20 +888,222 @@ public class AppTest {
                 return true;
         }
 
+
+        public ImmutableTriple<Boolean, List<PartitionOutput>,List<ScanOutput>> FirstStageStarling(boolean local,boolean enablePartition,boolean enableScan,HashMap<String, List<InputSplit>> tableToInputSplits,int filePerCf,int scanpartition,int numOfPartition,int lineitemPartitionNum) {
+                List<CompletableFuture<PartitionOutput>> partitionFuture = new ArrayList<CompletableFuture<PartitionOutput>>();
+                List<CompletableFuture<ScanOutput>> futures = new ArrayList<CompletableFuture<ScanOutput>>();
+                List<CompletableFuture<Output>> CloudFuture = new ArrayList<CompletableFuture<Output>>();
+                List<PartitionOutput> partitionOutputs = new ArrayList<PartitionOutput>();
+                List<ScanOutput> fusionOutputs = new ArrayList<ScanOutput>();
+
+                /**
+                 * partition customer prepare
+                 */
+                String customerFilter = "{\"schemaName\":\"tpch\",\"tableName\":\"customer\",\"columnFilters\":{}}";
+                PartitionInput input = new PartitionInput();
+                input.setTransId(123456);
+                ScanTableInfo tableInfo = new ScanTableInfo();
+                tableInfo.setTableName("customer");
+
+                int c_NumOfCF = (int)Math.ceil((double)tableToInputSplits.get("customer").size()/(double)filePerCf);
+                System.out.println("total numof cf for customer: " + c_NumOfCF);
+                // int c_NumOfFile = (int)Math.ceil((double)tableToInputSplits.get("customer").size()/(double)CFnumber);
+                // System.out.println("total size of customer table: "+tableToInputSplits.get("customer").size()+" and each cf deal with : " + c_NumOfFile + " customer files");
+                tableInfo.setFilter(customerFilter);
+                tableInfo.setBase(true);
+                tableInfo.setColumnsToRead(new String[] { "c_custkey","c_name"});
+                tableInfo.setStorageInfo(new StorageInfo(Storage.Scheme.s3, null, null, null, null));
+                input.setTableInfo(tableInfo);
+                input.setProjection(new boolean[] { true, true });
+                PartitionInfo partitionInfo = new PartitionInfo();
+                partitionInfo.setNumPartition(numOfPartition);
+                partitionInfo.setKeyColumnIds(new int[] {0});
+                //***********************************************************/
+
+
+                /**
+                 * partition orders prepare
+                 */
+                String ordersFilter = "{\"schemaName\":\"tpch\",\"tableName\":\"orders\",\"columnFilters\":{}}";
+                PartitionInput o_Input = new PartitionInput();
+                o_Input.setTransId(123456);
+                ScanTableInfo o_tableInfo = new ScanTableInfo();
+                o_tableInfo.setTableName("orders");
+                // int o_NumOfFile = (int)Math.ceil((double)tableToInputSplits.get("orders").size()/(double)CFnumber);
+                int o_NumOfCF = (int)Math.ceil((double)tableToInputSplits.get("orders").size()/(double)filePerCf);
+                System.out.println("total numof cf for orders: " + o_NumOfCF);
+                o_tableInfo.setFilter(ordersFilter);
+                o_tableInfo.setBase(true);
+                o_tableInfo.setColumnsToRead(new String[] { "o_orderkey","o_custkey","o_orderdate","o_totalprice"});
+                o_tableInfo.setStorageInfo(new StorageInfo(Storage.Scheme.s3, null, null, null, null));
+                o_Input.setTableInfo(o_tableInfo);
+                o_Input.setProjection(new boolean[] { true, true, true, true });
+                PartitionInfo o_partitionInfo = new PartitionInfo();
+                o_partitionInfo.setNumPartition(numOfPartition);
+                o_partitionInfo.setKeyColumnIds(new int[] {1});
+                //**********************************************/
+                
+                /**
+                 * partition lineitem prepare
+                 */
+                String lineitemFilter = "{\"schemaName\":\"tpch\",\"tableName\":\"lineitem\",\"columnFilters\":{}}";
+                PartitionInput l_Input = new PartitionInput();
+                l_Input.setTransId(123456);
+                ScanTableInfo l_tableInfo = new ScanTableInfo();
+                l_tableInfo.setTableName("lineitem");
+                int l_NumOfCF = (int)Math.ceil((double)tableToInputSplits.get("lineitem").size()/(double)filePerCf);
+                System.out.println("total numof cf for lineitem: " + l_NumOfCF);
+
+                l_tableInfo.setFilter(lineitemFilter);
+                l_tableInfo.setBase(true);
+                l_tableInfo.setColumnsToRead(new String[] { "l_orderkey", "l_quantity" });
+                l_tableInfo.setStorageInfo(new StorageInfo(Storage.Scheme.s3, null, null, null, null));
+                l_Input.setTableInfo(l_tableInfo);
+                l_Input.setProjection(new boolean[] { true, true });
+                PartitionInfo l_partitionInfo = new PartitionInfo();
+                l_partitionInfo.setNumPartition(lineitemPartitionNum);
+                l_partitionInfo.setKeyColumnIds(new int[] {0});
+                //**********************************************/
+
+                if (enablePartition){
+                        InvokerLocal invokerLocal= new InvokerLocal();
+                        for(int c_num=0;c_num<c_NumOfCF;c_num++){
+                                tableInfo.setInputSplits(tableToInputSplits.get("customer").subList(c_num*filePerCf, (c_num+1)*filePerCf > tableToInputSplits.get("customer").size() ? tableToInputSplits.get("customer").size() : (c_num+1)*filePerCf));
+                                input.setPartitionInfo(partitionInfo);
+                                input.setOutput(new OutputInfo("jingrong-lambda-test/unit_tests/intermediate_result/customer_partition/Part_" + c_num,
+                                new StorageInfo(Storage.Scheme.s3, null, null, null, null), false));
+                                
+                                
+                                if(local){
+                                        partitionFuture.add(invokerLocal.invokeLocalPartition(input));
+                                }
+                                else{
+                                        CloudFuture.add(InvokerCloud.invokeCloudPartition(InvokerFactory.Instance(),input));
+                                }
+                        }
+
+                        for (int o_num=0;o_num<o_NumOfCF;o_num++){
+                                o_tableInfo.setInputSplits(tableToInputSplits.get("orders").subList(o_num*filePerCf, (o_num+1)*filePerCf > tableToInputSplits.get("orders").size() ? tableToInputSplits.get("orders").size() : (o_num+1)*filePerCf));
+                                o_Input.setPartitionInfo(o_partitionInfo);
+                                o_Input.setOutput(new OutputInfo("jingrong-lambda-test/unit_tests/intermediate_result/orders_partition/Part_" + o_num,
+                                new StorageInfo(Storage.Scheme.s3, null, null, null, null), false));
+                                
+                                if(local){
+                                        partitionFuture.add(invokerLocal.invokeLocalPartition(o_Input));
+                                }
+                                else{
+                                        CloudFuture.add(InvokerCloud.invokeCloudPartition(InvokerFactory.Instance(),o_Input));
+                                }
+
+                        }
+
+                        for (int l_num=0;l_num<l_NumOfCF;l_num++){
+                                l_tableInfo.setInputSplits(tableToInputSplits.get("lineitem").subList(l_num*filePerCf, (l_num+1)*filePerCf > tableToInputSplits.get("lineitem").size() ? tableToInputSplits.get("lineitem").size() : (l_num+1)*filePerCf));
+                                l_Input.setPartitionInfo(l_partitionInfo);
+                                l_Input.setOutput(new OutputInfo("jingrong-lambda-test/unit_tests/intermediate_result/lineitem_partition/Part_" + l_num,
+                                new StorageInfo(Storage.Scheme.s3, null, null, null, null), false));
+                                
+                                if(local){
+                                        partitionFuture.add(invokerLocal.invokeLocalPartition(l_Input));
+                                }
+                                else{
+                                        CloudFuture.add(InvokerCloud.invokeCloudPartition(InvokerFactory.Instance(),l_Input));
+                                }
+
+                        }
+
+                }
+
+                /**
+                 * partial aggregation lineitem
+                 */
+                
+                //set scan pipeline info
+                ScanInput scanInput = new ScanInput();
+                scanInput.setTransId(123456);
+                ScanTableInfo scantableInfo = new ScanTableInfo();
+                scantableInfo.setTableName("lineitem");
+                scantableInfo.setBase(true);
+                scantableInfo.setColumnsToRead(new String[] { "l_orderkey", "l_quantity" });
+                scantableInfo.setStorageInfo(new StorageInfo(Storage.Scheme.s3, null, null, null, null));
+                scantableInfo.setFilter(lineitemFilter);
+                scanInput.setScanProjection(new boolean[] { true, true });
+
+                PartialAggregationInfo parAggregationInfo = new PartialAggregationInfo();
+                parAggregationInfo.setGroupKeyColumnNames(new ArrayList<String>(Arrays.asList("l_orderkey")));
+                parAggregationInfo.setGroupKeyColumnAlias(new String[] { "l_orderkey" });
+                parAggregationInfo.setGroupKeyColumnIds(new int[] { 0 });
+                parAggregationInfo.setAggregateColumnIds(new int[] { 1 });
+                parAggregationInfo.setResultColumnAlias(new String[] { "SUM_l_quantity" });
+                parAggregationInfo.setResultColumnTypes(new String[] { "bigint" });
+                parAggregationInfo.setFunctionTypes(new FunctionType[] { FunctionType.SUM });
+                parAggregationInfo.setPartition(true);
+                parAggregationInfo.setNumPartition(scanpartition);
+                
+                
+                for(int l_num=0;l_num<l_NumOfCF;l_num++){
+                        List<InputSplit> lineitemInputSplit = tableToInputSplits.get("lineitem").subList(l_num*filePerCf, (l_num+1)*filePerCf > tableToInputSplits.get("lineitem").size() ? tableToInputSplits.get("lineitem").size() : (l_num+1)*filePerCf);
+                        scantableInfo.setInputSplits(lineitemInputSplit);
+                        scanInput.setPartialAggregationPresent(true);
+                        scanInput.setTableInfo(scantableInfo);
+                        scanInput.setPartialAggregationInfo(parAggregationInfo);
+                        scanInput.setOutput(new OutputInfo("jingrong-lambda-test/unit_tests/intermediate_result/scanoutput/Part_" + l_num,
+                        new StorageInfo(Storage.Scheme.s3, null, null, null, null), false));
+                        CloudFuture.add(InvokerCloud.invokeCloudScan(InvokerFactory.Instance(),scanInput));
+                }
+                
+                
+
+
+                
+                for(CompletableFuture<Output> future: CloudFuture){
+                        try {
+                                Output result = future.get();
+
+                                cumulativeComputeCostMs += result.getCumulativeComputeCostMs();
+                                cumulativeInputCostMs += result.getCumulativeInputCostMs();
+                                cumulativeOutputCostMs += result.getCumulativeOutputCostMs();
+                                cumulativeDurationMs += result.getDurationMs();
+
+                                cumulativeMemoryMB += result.getMemoryMB();
+                                cumulativeReadBytes += result.getTotalReadBytes();
+                                cumulativeWriteBytes += result.getTotalWriteBytes();
+
+                                if (result instanceof PartitionOutput){
+                                        partitionOutputs.add((PartitionOutput)result);
+                                }else{
+                                        fusionOutputs.add((ScanOutput)result);
+                                }
+                        } catch (Exception e) {
+                                e.printStackTrace();
+                        }
+                }
+                
+
+                System.out.println("finish the first stage, writing the outputs");
+                
+                ImmutableTriple<Boolean, List<PartitionOutput>,List<ScanOutput>> result = new ImmutableTriple(true, partitionOutputs, fusionOutputs);
+                return result;
+        }
+
         @Test
-        public void TestTPCHQ18() {
+        public void TestTPCHQ18LASS() {
+                // fix memory consuming to 1000GB
+
+
                 System.setProperty("PIXELS_HOME", "/home/ubuntu/opt/pixels");
                 String pixelsHome = System.getenv("PIXELS_HOME");
                 
+                long startTime = System.nanoTime();
                 // Chose local or cloud
                 // int functionUSED = 0;
                 boolean local = false;
-                int numOfPartition = 20;
-                int numOfPostPartition = 20;
+                int numOfPartition = 40;
+                int numOfPostPartition = 40;
                 int numOfScanPartition = 40;
                 //prepraing the input
                 HashMap<String, List<InputSplit>> tableToInputSplits = Common.getTableToInputSplits(Arrays.asList("customer","lineitem","orders"));
-                long startTime = System.nanoTime();
+                
 
                 //stage 1 running
 
@@ -1006,89 +1266,213 @@ public class AppTest {
                 System.out.println("cloud function been called");
                 System.out.println("Cloud function Q18 runtime: " + (endTime - startTime)/1000000 + "ms");
 
+                System.out.println("cumulativeComputeCostMs: " + cumulativeComputeCostMs);
+                System.out.println("cumulativeInputCostMs: " + cumulativeInputCostMs);
+                System.out.println("cumulativeOutputCostMs: " + cumulativeOutputCostMs);
+                System.out.println("cumulativeDurationMs: " + cumulativeDurationMs);
+                System.out.println("cumulativeMemoryMB: " + cumulativeMemoryMB);
+                System.out.println("cumulativeReadBytes: " + cumulativeReadBytes);
+                System.out.println("cumulativeWriteBytes: " + cumulativeWriteBytes);
 
                
 
         }
 
-                 // String leftFilter ="{\"schemaName\":\"tpch\",\"tableName\":\"aggregate_lineitem\"," +
-                //         "\"columnFilters\":{1:{\"columnName\":\"SUM_l_quantity\",\"columnType\":\"LONG\"," +
-                //         "\"filterJson\":\"{\\\"javaType\\\":\\\"long\\\",\\\"isAll\\\":false," +
-                //         "\\\"isNone\\\":false,\\\"allowNull\\\":false,\\\"ranges\\\":[{" +
-                //         "\\\"lowerBound\\\":{\\\"type\\\":\\\"EXCLUDED\\\",\\\"value\\\":314}," +
-                //         "\\\"upperBound\\\":{\\\"type\\\":\\\"UNBOUNDED\\\"}}]," +
-                //         "\\\"discreteValues\\\":[]}\"}}}";
-
+        @Test 
+        public void TestTPCHQ18LASSC(){
                 
-                // //right filter need to be changed
-                // String rightFilter = "{\"schemaName\":\"tpch\",\"tableName\":\"partitioned_join_customer_orders_lineitem\",\"columnFilters\":{}}";
 
-                // BroadcastJoinInput brodcastjoinInput = new BroadcastJoinInput();
-                // brodcastjoinInput.setTransId(123456);
-                // BroadcastTableInfo leftTable = new BroadcastTableInfo();
-                // leftTable.setColumnsToRead(new String[] { "l_orderkey", "SUM_l_quantity" });
-                // leftTable.setKeyColumnIds(new int[]{0});
-                // leftTable.setTableName("aggregate_lineitem");
-                // leftTable.setBase(true);
 
-                // List<InputSplit> leftInputSplit = new ArrayList<InputSplit>();
-                // for(String file: stage3Files.get("aggregation_result")){
-                //         InputSplit temp = new InputSplit(Arrays.asList(new InputInfo(file, 0, -1)));
-                //         leftInputSplit.add(temp);
+
+
+        }
+
+        @Test 
+        public void TestTPCHQ18Starling(){
+                // fix memory consuming to 1000GB
+
+
+                System.setProperty("PIXELS_HOME", "/home/ubuntu/opt/pixels");
+                String pixelsHome = System.getenv("PIXELS_HOME");
+                
+                long startTime = System.nanoTime();
+                // Chose local or cloud
+                // int functionUSED = 0;
+                boolean local = false;
+                int numOfPartition = 60;
+                int numOfPostPartition = 60;
+                int numOfScanPartition = 60;
+                //prepraing the input
+                HashMap<String, List<InputSplit>> tableToInputSplits = Common.getTableToInputSplits(Arrays.asList("customer","lineitem","orders"));
+                
+
+                //stage 1 running
+
+                //numof partition is for customer and orders
+                //numof post partition is for lineitem
+                ImmutableTriple<Boolean, List<PartitionOutput>,List<ScanOutput>> stageOneOUT = FirstStageStarling(local,true,true,tableToInputSplits,15,numOfScanPartition,numOfPartition,numOfPostPartition);
+                boolean boolstageOne=stageOneOUT.getLeft();
+
+                /*
+                 * get output from stage 1
+                 */
+                HashMap<String, List<String>> stage2Files = new HashMap<String, List<String>>();
+                List<String> customer_partition = new ArrayList<String>();
+                List<String> orders_partition = new ArrayList<String>();
+                List<String> lineitem_partition = new ArrayList<String>();
+                List<String> scanoutput = new ArrayList<String>();
+                for(PartitionOutput out:stageOneOUT.getMiddle()){
+                        if(out.getPath().contains("customer_partition")){
+                                customer_partition.add(out.getPath());
+                                // System.out.println("customer_partition path: "+out.getPath());
+                        }else if(out.getPath().contains("orders_partition")){
+                                orders_partition.add(out.getPath());
+                                // System.out.println("orders_partition path: "+out.getPath());
+                        }else if(out.getPath().contains("lineitem_partition")){
+                                lineitem_partition.add(out.getPath());
+                        }
+                }
+
+                for(ScanOutput out:stageOneOUT.getRight()){
+                        scanoutput.addAll(out.getOutputs());
+                }    
+                
+                stage2Files.put("customer_partition", customer_partition);
+                stage2Files.put("orders_partition", orders_partition);
+                stage2Files.put("lineitem_partition", lineitem_partition);
+                stage2Files.put("scanoutput", scanoutput);
+                /********************************************** */
+                //for stage two testing
+
+                // HashMap<String, List<String>> testFiles = new HashMap<String, List<String>>();
+                // stage2Files = getTableToString("s3://jingrong-lambda-test/unit_tests/intermediate_result/",Arrays.asList("customer_partition","orders_partition","lineitem_partition","scanoutput"));
+                
+                // System.out.println("tets stage2Files");
+                // for(String test: stage2Files.get("scanoutput")){
+                //         System.out.println("scanoutput: "+test);
                 // }
+                // boolean boolstageOne = true;
 
-                // leftTable.setInputSplits(leftInputSplit);
-                // leftTable.setFilter(leftFilter);
-                // leftTable.setStorageInfo(new StorageInfo(Storage.Scheme.s3, null, null, null, null));
-                // brodcastjoinInput.setSmallTable(leftTable);
 
-                // BroadcastTableInfo rightTable = new BroadcastTableInfo();
-                // rightTable.setColumnsToRead(new String[] { "c_custkey","c_name","o_orderkey", "o_custkey", "o_orderdate","o_totalprice", "l_orderkey", "l_quantity" });
-                // rightTable.setKeyColumnIds(new int[]{6});
-                // rightTable.setTableName("partitioned_join_customer_orders_lineitem");
-                // rightTable.setBase(true);
-                // rightTable.setFilter(rightFilter);
-                // rightTable.setStorageInfo(new StorageInfo(Storage.Scheme.s3, null, null, null, null));
-                
-
-                // JoinInfo joinInfo2 = new JoinInfo();
-                // joinInfo2.setJoinType(JoinType.EQUI_INNER);
-                // joinInfo2.setSmallColumnAlias(new String[] { });
-                // joinInfo2.setLargeColumnAlias(new String[] { "c_custkey","c_name","o_orderkey", "o_orderdate","o_totalprice", "l_quantity" });
-                // joinInfo2.setPostPartition(false);
-                // joinInfo2.setSmallProjection(new boolean[] { false, false });
-                // joinInfo2.setLargeProjection(new boolean[] { true, true, true, false, true, true, false, true });
-
-                // int fileperBr= (int)Math.ceil((double)HashJoinCFnumber/(double)brocastJoinCFnumber);
-                // assertTrue("fileperbr has to be divided", HashJoinCFnumber%brocastJoinCFnumber == 0);
-                // for(int br_num=0;br_num<brocastJoinCFnumber ;br_num++){
-                //         List<String> local_secondStageFiles = new ArrayList<String>();
-                //         for(int file_num=0;file_num<fileperBr;file_num++){
-                //                 local_secondStageFiles.add(secondStageFiles.get(br_num*fileperBr+file_num));
-                //         }
-                //         List<InputSplit> rightInputSplit = new ArrayList<InputSplit>();
-                //         for(String file: local_secondStageFiles){
-                //                 InputSplit temp = new InputSplit(Arrays.asList(new InputInfo(file, 0, -1)));
-                //                 rightInputSplit.add(temp);
-                //         }
-                //         // rightInputSplit.forEach(System.out::println);
+                boolean boolstageTwo = false;
+                List<String> customer_orders_partitionjoin = new ArrayList<String>();
+                List<String> aggregation_result = new ArrayList<String>();
+                if(boolstageOne){
+                        System.out.println("Stage one success!");
                         
+                        // Both existing hash values
+                        // Set<Integer> left = stageOneOUT.getMiddle().get(0).getHashValues();
+                        // Set<Integer> right = stageOneOUT.getMiddle().get(1).getHashValues();
 
-                //         rightTable.setInputSplits(rightInputSplit);
-                //         brodcastjoinInput.setLargeTable(rightTable);
-                //         brodcastjoinInput.setJoinInfo(joinInfo2);
-                //         brodcastjoinInput.setOutput(new MultiOutputInfo("jingrong-lambda-test/unit_tests/intermediate_result/broadcast_join/",
-                //         new StorageInfo(Storage.Scheme.s3, null, null, null, null), false,
-                //         Arrays.asList("part_"+br_num)));
+                        // System.out.println("print left");
+                        // left.forEach(System.out::println);
+                        // System.out.println("print left");
+                        // right.forEach(System.out::println);
 
-                //         if(islocal){
-                //                 futures.add(InvokerLocal.invokeLocalBrocastJoin(brodcastjoinInput));
-                //         }
-                //         else{
-                //                 Cloudfutures.add(InvokerCloud.invokeCloudBrocastJoin(InvokerFactory.Instance(),brodcastjoinInput));
-                //         }
-                // }
+                        // List<Integer> hashValues = new ArrayList<Integer>();
+                        // for (Integer i : left) {
+                        //         if (right.contains(i)) {
+                        //                 hashValues.add(i);
+                        //         }
+                        // }
+                        // System.out.println("hashValues: " + hashValues);
+                        List<Integer> testHashvalues = new ArrayList<Integer>(numOfPartition);
+                        for(int i=0;i<numOfPartition;i++){
+                                testHashvalues.add(i);
+                        }
 
+                        // stage always has 1 full aggregation
+                        ImmutableTriple<Boolean, List<JoinOutput>,List<AggregationOutput>> stageTwo = SecondStage(local,stage2Files, testHashvalues,20,40,numOfPartition,numOfPostPartition);
+                        for(JoinOutput out:stageTwo.getMiddle()){
+                                customer_orders_partitionjoin.addAll(out.getOutputs());
+                        }
+                        for(AggregationOutput out:stageTwo.getRight()){
+                                aggregation_result.addAll(out.getOutputs());
+                        }
+
+                        // Set<Integer> stage2left = stageTwo.getMiddle().get(0).getHashValues();
+                        // Set<Integer> stage2right = stageOneOUT.getRight().get(0).
+                        // List<Integer> hashValues = new ArrayList<Integer>();
+                        // for (Integer i : left) {
+                        //         if (right.contains(i)) {
+                        //                 hashValues.add(i);
+                        //         }
+                        // }
+                        // System.out.println("hashValues: " + hashValues);
+
+
+                        boolstageTwo = stageTwo.getLeft();
+                }
+                else{
+                        System.out.println("Stage one failed!");
+                        return;
+                }
+                
+
+
+                HashMap<String, List<String>> stage3Files = new HashMap<String, List<String>>();
+                stage3Files.put("lineitem_partition", lineitem_partition);
+                stage3Files.put("customer_orders_partitionjoin", customer_orders_partitionjoin);
+                stage3Files.put("aggregation_result", aggregation_result);
+                // boolean boolstageTwo = true;
+                // HashMap<String, List<String>> stage3Files = new HashMap<String, List<String>>();
+                // stage3Files = Common.getTableToString("s3://jingrong-lambda-test/unit_tests/intermediate_result/",Arrays.asList("lineitem_partition","customer_orders_partitionjoin","aggregation_result"));
+                // long startTime = System.nanoTime();
+                boolean boolstageThree = false;
+                List<String> Stage4inputs = new ArrayList<String>();
+                System.out.println("entering stage three");
+                if(boolstageTwo){
+                        System.out.println("Stage two success!!!!");
+                        List<Integer> testHashvalues = new ArrayList<Integer>(numOfPostPartition);
+                        for(int i=0;i<numOfPostPartition;i++){
+                                testHashvalues.add(i);
+                        }
+
+                        ImmutablePair<Boolean, List<JoinOutput>> stageThree = ThirdStage(local,stage3Files, testHashvalues, 20,20,numOfPartition,numOfPostPartition);
+                        for(JoinOutput out:stageThree.getRight()){
+                                Stage4inputs.addAll(out.getOutputs());
+                        }
+                        boolstageThree = stageThree.getLeft();
+                } else{
+                        System.out.println("Stage two failed!");
+                        return;
+                }
+
+
+                
+
+                Boolean boolstageFour = false;
+                if(boolstageThree){
+                        System.out.println("Stage three success!!!!");
+                        boolstageFour = FourthStage(local,Stage4inputs,20,20);
+                } else{
+                        System.out.println("Stage three failed!");
+                        return;
+                }
+
+                if(boolstageFour){
+                        System.out.println("Stage four success!!!!");
+                } else{
+                        System.out.println("Stage four failed!");
+                        return;
+                }
+
+                System.out.println("All stages success!!!!");
+                
+                long endTime   = System.nanoTime();
+                System.out.println("cloud function been called");
+                System.out.println("Cloud function Q18 runtime: " + (endTime - startTime)/1000000 + "ms");
+
+                System.out.println("cumulativeComputeCostMs: " + cumulativeComputeCostMs);
+                System.out.println("cumulativeInputCostMs: " + cumulativeInputCostMs);
+                System.out.println("cumulativeOutputCostMs: " + cumulativeOutputCostMs);
+                System.out.println("cumulativeDurationMs: " + cumulativeDurationMs);
+                System.out.println("cumulativeMemoryMB: " + cumulativeMemoryMB);
+                System.out.println("cumulativeReadBytes: " + cumulativeReadBytes);
+                System.out.println("cumulativeWriteBytes: " + cumulativeWriteBytes);
+
+
+        }
 
 }
 

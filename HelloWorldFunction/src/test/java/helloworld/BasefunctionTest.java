@@ -34,17 +34,79 @@ import java.util.HashMap;
 import io.pixelsdb.pixels.common.turbo.WorkerType;
 import io.pixelsdb.pixels.planner.plan.physical.input.AggregationInput;
 import io.pixelsdb.pixels.planner.plan.physical.output.AggregationOutput;
+import io.pixelsdb.pixels.planner.plan.logical.operation.ScanpipeInfo;
 import io.pixelsdb.pixels.planner.plan.physical.domain.AggregatedTableInfo;
 import io.pixelsdb.pixels.planner.plan.physical.domain.AggregationInfo;
 import io.pixelsdb.pixels.planner.plan.physical.input.BroadcastChainJoinInput;
 import io.pixelsdb.pixels.planner.plan.physical.input.BroadcastJoinInput;
+import io.pixelsdb.pixels.planner.plan.physical.input.JoinScanFusionInput;
 import io.pixelsdb.pixels.planner.plan.physical.domain.BroadcastTableInfo;
 import io.pixelsdb.pixels.planner.plan.physical.domain.JoinInfo;
 public class BasefunctionTest {
 
 
+        private long cumulativeComputeCostMs;
+        private long cumulativeInputCostMs;
+        private long cumulativeOutputCostMs;
+        private long cumulativeDurationMs;
+        private long cumulativeMemoryMB;
 
+        private long cumulativeReadBytes;
+        private long cumulativeWriteBytes;
         
+        @Test
+        public void testPartialagg(){
+                String filter="{\"schemaName\":\"tpch\",\"tableName\":\"lineitem\",\"columnFilters\":{}}";
+
+                ScanInput scanInput = new ScanInput();
+                scanInput.setTransId(123456);
+                ScanTableInfo scantableInfo = new ScanTableInfo();
+                scantableInfo.setFilter(filter);
+                scantableInfo.setTableName("lineitem");
+                scantableInfo.setBase(true);
+                scantableInfo.setColumnsToRead(new String[] { "l_orderkey", "l_quantity" });
+                // scantableInfo.setSchemaName(filter);
+                scantableInfo.setStorageInfo(new StorageInfo(Storage.Scheme.s3, null, null, null, null));
+                scanInput.setPartialAggregationPresent(true);
+                scanInput.setScanProjection(new boolean[] { true, true });
+                
+                PartialAggregationInfo parAggregationInfo = new PartialAggregationInfo();
+                parAggregationInfo.setGroupKeyColumnNames(new ArrayList<String>(Arrays.asList("l_orderkey")));
+                parAggregationInfo.setGroupKeyColumnAlias(new String[] { "l_orderkey" });
+                parAggregationInfo.setGroupKeyColumnIds(new int[] { 0 });
+                parAggregationInfo.setAggregateColumnIds(new int[] { 1 });
+                parAggregationInfo.setResultColumnAlias(new String[] {"SUM_l_quantity"});
+                parAggregationInfo.setResultColumnTypes(new String[] {"bigint"});
+                parAggregationInfo.setFunctionTypes(new FunctionType[] { FunctionType.SUM });
+                parAggregationInfo.setPartition(true);
+                parAggregationInfo.setNumPartition(20);
+                
+
+                List<InputSplit> lineitemInputSplit = new ArrayList<InputSplit>();
+                lineitemInputSplit.add(new InputSplit(Arrays.asList(new InputInfo("s3://jingrong-lambda-test/tpch/lineitem/v-0-ordered/20230801085208_282.pxl", 0, -1))));
+                
+                scantableInfo.setInputSplits(lineitemInputSplit);
+                scanInput.setPartialAggregationInfo(parAggregationInfo);
+                scanInput.setTableInfo(scantableInfo);
+                scanInput.setOutput(new OutputInfo("s3://jingrong-lambda-test/unit_tests/intermediate_result/Part_"+0,
+                new StorageInfo(Storage.Scheme.s3, null, null, null, null), false));
+                
+                System.out.println(JSON.toJSONString(scanInput));
+
+                // CloudFuture.add(InvokerCloud.invokeCloudScan(InvokerFactory.Instance(),scanInput));
+                // try{
+                //         Output output = InvokerLocal.invokeLocalScan(scanInput).get();
+                //         System.out.println(JSON.toJSONString(output));
+                // }catch(Exception e){
+                //         System.out.println("failed!");
+                //         return;
+                // }
+                
+        }
+
+
+ 
+
     @Test
     public void testBaseScan(){
 
@@ -98,6 +160,7 @@ public class BasefunctionTest {
     @Test
     public void testfullAggregation(){
         HashMap<String, List<String>> stage1Files = Common.getTableToString("s3://jingrong-lambda-test/unit_tests/intermediate_result/",Arrays.asList("testlineitem"));
+        
         AggregationInput aggregationInput = new AggregationInput();
         aggregationInput.setTransId(123456);
         AggregatedTableInfo aggregatedTableInfo = new AggregatedTableInfo();
@@ -117,6 +180,7 @@ public class BasefunctionTest {
         aggregationInfo.setAggregateColumnIds(new int[] {1});
         aggregationInfo.setGroupKeyColumnNames(new String[] {"l_orderkey"});
         aggregationInfo.setGroupKeyColumnProjection(new boolean[] {true});
+        // aggregationInfo.setResultco
         aggregationInfo.setResultColumnNames(new String[] {"SUM_l_quantity"});
         aggregationInfo.setResultColumnTypes(new String[] {"bigint"});
         aggregationInfo.setFunctionTypes(new FunctionType[] {FunctionType.SUM});
@@ -150,7 +214,7 @@ public class BasefunctionTest {
     @Test
     public void testBasePartitionjoin(){
                 List<Integer> hashValues = new ArrayList<Integer>();
-                for (int i = 0 ; i < 20; ++i)
+                for (int i = 0 ; i < 30; ++i)
                 {
                     hashValues.add(i);
                 }
@@ -189,7 +253,7 @@ public class BasefunctionTest {
                 joinInfo.setLargeProjection(new boolean[]{true, true, true, true});
 
                 joinInfo.setPostPartition(true);
-                joinInfo.setPostPartitionInfo(new PartitionInfo(new int[] {2}, 20));
+                joinInfo.setPostPartitionInfo(new PartitionInfo(new int[] {2}, 30));
                 joinInput.setJoinInfo(joinInfo);
 
                 joinInput.setOutput(new MultiOutputInfo("jingrong-lambda-test/unit_tests/intermediate_result/customer_orders_partitioned/",
@@ -231,6 +295,7 @@ public class BasefunctionTest {
         new StorageInfo(Storage.Scheme.s3, null, null, null, null), false));
         InvokerLocal invokerLocal= new InvokerLocal();
         
+        System.out.println(JSON.toJSONString(input));
 
 
         String ordersFilter = "{\"schemaName\":\"tpch\",\"tableName\":\"orders\",\"columnFilters\":{}}";
@@ -255,15 +320,17 @@ public class BasefunctionTest {
         
 
 
-        try {
-            Output output = invokerLocal.invokeLocalPartition(input).get();
-            Output output2 = invokerLocal.invokeLocalPartition(input2).get();
-            System.out.println(JSON.toJSONString(output));
-            System.out.println(JSON.toJSONString(output2));
-        } catch (Exception e) {
-            System.out.println("Stage one failed!");
-            return;
-        }
+        // try {
+        //         InvokerCloud invokerCloud = new InvokerCloud();
+
+        //     Output output = InvokerCloud.invokeCloudPartition(InvokerFactory.Instance(),input).get();
+        //     Output output2 = InvokerCloud.invokeCloudPartition(InvokerFactory.Instance(),input).get();
+        //     System.out.println(JSON.toJSONString(output));
+        //     System.out.println(JSON.toJSONString(output2));
+        // } catch (Exception e) {
+        //     System.out.println("Stage one failed!");
+        //     return;
+        // }
 
 
 
@@ -397,4 +464,90 @@ public class BasefunctionTest {
 
     }
 
+
+    @Test 
+    public void testBaseJoinScanFusion(){
+        /**
+         * scan and partition table info
+         */
+
+        String lineitemFilter = "{\"schemaName\":\"tpch\",\"tableName\":\"lineitem\",\"columnFilters\":{}}";
+        JoinScanFusionInput joinScanInput = new JoinScanFusionInput();
+        PartitionInput rightPartitionInfo = new PartitionInput();
+        rightPartitionInfo.setTransId(123456);
+        ScanTableInfo scantableInfo = new ScanTableInfo();
+        scantableInfo.setTableName("lineitem");
+        // Integer l_NumOfFile = (int)Math.ceil((double)tableToInputSplits.get("lineitem").size()/(double)CFnumber); 
+
+        scantableInfo.setColumnsToRead(new String[] { "l_orderkey", "l_quantity" });
+        scantableInfo.setFilter(lineitemFilter);
+        scantableInfo.setBase(true);
+        scantableInfo.setStorageInfo(new StorageInfo(Storage.Scheme.s3, null, null, null, null));
+        rightPartitionInfo.setProjection(new boolean[] { true, true });
+        PartitionInfo fusionpartitionInfo = new PartitionInfo();
+        fusionpartitionInfo.setKeyColumnIds(new int[] { 0 });
+        fusionpartitionInfo.setNumPartition(20);
+        rightPartitionInfo.setPartitionInfo(fusionpartitionInfo);
+        
+        //set scan pipeline info
+        ScanpipeInfo scanpipe = new ScanpipeInfo("lineitem");
+        scanpipe.setIncludeCols(new String[] { "l_orderkey", "l_quantity" });
+        scanpipe.setProjectFidlds(new String[] { "l_orderkey", "l_quantity" });
+        scanpipe.setProjectFieldIds(new int[] { 0, 4 });
+        scanpipe.setPartialAggregation(true);
+        PartialAggregationInfo parAggregationInfo = new PartialAggregationInfo();
+        parAggregationInfo.setGroupKeyColumnNames(new ArrayList<String>(Arrays.asList("l_orderkey")));
+        parAggregationInfo.setGroupKeyColumnAlias(new String[] { "l_orderkey" });
+        parAggregationInfo.setGroupKeyColumnIds(new int[] { 0 });
+        parAggregationInfo.setAggregateColumnIds(new int[] { 1 });
+        parAggregationInfo.setResultColumnAlias(new String[] { "SUM_l_quantity" });
+        parAggregationInfo.setResultColumnTypes(new String[] { "bigint" });
+        parAggregationInfo.setFunctionTypes(new FunctionType[] { FunctionType.SUM });
+        parAggregationInfo.setPartition(true);
+        parAggregationInfo.setNumPartition(20);
+        scanpipe.setPartialAggregationInfo(parAggregationInfo);
+        joinScanInput.setScanPipelineInfo(scanpipe);
+        // set fusionOutput
+        MultiOutputInfo fusionOutput = new MultiOutputInfo();
+        fusionOutput.setPath("s3://jingrong-lambda-test/unit_tests/intermediate_result/");
+        fusionOutput.setStorageInfo(new StorageInfo(Storage.Scheme.s3, null, null, null, null));
+        fusionOutput.setEncoding(false);
+        // int l_NumOfCF = (int)Math.ceil((double)tableToInputSplits.get("lineitem").size()/(double)filePerCf);
+        // System.out.println("total size of l_numOfCF: " + l_NumOfCF);
+
+        
+        scantableInfo.setInputSplits(new ArrayList<InputSplit>(Arrays.asList(new InputSplit(Arrays.asList(new InputInfo("s3://jingrong-lambda-test/tpch/lineitem/v-0-ordered/20230801085208_282.pxl", 0, -1),
+                                        new InputInfo("s3://jingrong-lambda-test/tpch/lineitem/v-0-ordered/20230801085221_286.pxl", 0, -1))))));
+        rightPartitionInfo.setTableInfo(scantableInfo);
+        fusionOutput.setFileNames(new ArrayList<String>(
+                        Arrays.asList("partitionoutput1/Part_"+0, "lineitem_partition/Part_"+0, "scanoutput/Part_"+0)));
+        joinScanInput.setFusionOutput(fusionOutput);
+        joinScanInput.setPartitionlargeTable(rightPartitionInfo);
+        try{
+                Output result = InvokerLocal.invokeLocalFusionJoinScan(joinScanInput).get();
+                cumulativeComputeCostMs += result.getCumulativeComputeCostMs();
+                cumulativeInputCostMs += result.getCumulativeInputCostMs();
+                cumulativeOutputCostMs += result.getCumulativeOutputCostMs();
+                cumulativeDurationMs += result.getDurationMs();
+
+                cumulativeMemoryMB += result.getMemoryMB();
+                cumulativeReadBytes += result.getTotalReadBytes();
+                cumulativeWriteBytes += result.getTotalWriteBytes();
+
+                System.out.println(JSON.toJSONString(result));
+        }catch(Exception e){
+                System.out.println("failed!");
+                return;
+        }      
+
+        System.out.println("cumulativeComputeCostMs: " + cumulativeComputeCostMs);
+        System.out.println("cumulativeInputCostMs: " + cumulativeInputCostMs);
+        System.out.println("cumulativeOutputCostMs: " + cumulativeOutputCostMs);
+        System.out.println("cumulativeDurationMs: " + cumulativeDurationMs);
+        System.out.println("cumulativeMemoryMB: " + cumulativeMemoryMB);
+        System.out.println("cumulativeReadBytes: " + cumulativeReadBytes);
+        System.out.println("cumulativeWriteBytes: " + cumulativeWriteBytes);
+
+        // Output out = InvokerLocal.invokeLocalFusionJoinScan(joinScanInput).get();
+    }
 }

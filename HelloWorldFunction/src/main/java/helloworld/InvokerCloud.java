@@ -21,9 +21,13 @@ import io.pixelsdb.pixels.worker.common.BaseBroadcastJoinWorker;
 import io.pixelsdb.pixels.planner.plan.physical.output.PartitionOutput;
 import io.pixelsdb.pixels.common.turbo.*;
 import io.pixelsdb.pixels.planner.plan.physical.input.ScanInput;
+import io.pixelsdb.pixels.planner.plan.physical.input.CombinedPartitionInput;
 
 public class InvokerCloud {
     
+    public static CompletableFuture<Output> invokeCloudCombinedPartition(InvokerFactory invokerFactory,CombinedPartitionInput combinedPartitionInput) {
+        return invokerFactory.getInvoker(WorkerType.COMBINED_PARTITION).invoke(combinedPartitionInput);
+    }
 
     public static CompletableFuture<Output> invokeCloudBrocastJoin(InvokerFactory invokerFactory,BroadcastJoinInput joinInput) {
         return invokerFactory.getInvoker(WorkerType.BROADCAST_JOIN).invoke(joinInput);

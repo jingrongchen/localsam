@@ -54,7 +54,7 @@ public class ResultTest
     @Test
     public void BaseResponse()
     {
-        String currentPath = "s3://jingrong-lambda-test/unit_tests/intermediate_result/testlineitem/part0";
+        String currentPath = "s3://jingrong-lambda-test/unit_tests/intermediate_result/testlineitem/Part_0/scan_0";
         try {
 
             StorageFactory storagefactory = StorageFactory.Instance();
@@ -115,7 +115,7 @@ public class ResultTest
     @Test
     public void testMetadata()
     {   
-        String path="s3://jingrong-lambda-test/unit_tests/intermediate_result/lineitem_partition/Part_0";
+        String path="s3://jingrong-test/tpch/lineitem/v-0-order/20230425092347_48.pxl";
         // String path = "s3://jingrong-lambd a-test/unit_tests/intermediate_result/customer_orders_lineitem_partitionjoin/part_0";
         PixelsReader reader;
         try
@@ -132,12 +132,15 @@ public class ResultTest
             {
                 System.out.println(type);
             }
-            System.out.println(reader.getRowGroupStats().size());
-
+            // System.out.println(reader.getColumnStat("c_custkey"));
+            System.out.println("num of rows: "+reader.getNumberOfRows()); 
+            System.out.println("num of row group: "+reader.getRowGroupInfos().size());
+            System.out.println("num of rows in a row group: "+reader.getRowGroupInfos().get(0).getNumberOfRows());
+            System.out.println("row group hash? : "+reader.getRowGroupInfos().get(0).getPartitionInfo().getHashValue());
+            System.out.println("data length: "+reader.getRowGroupInfos().get(0).getDataLength());
             // System.out.println(reader.getRowGroupInfo(3).getNumberOfRows());
 
-
-
+        
 
         }
         catch (IOException e)

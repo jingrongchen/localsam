@@ -34,6 +34,18 @@ public class Common {
         return tableToInputSplits;
     }
 
+    public static boolean removeFile(String path) {
+        try {
+            Storage storage = StorageFactory.Instance().getStorage(path);
+            storage.delete(path,true);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+
     
     public static HashMap<String, List<InputSplit>> getTableToInputSplits(List<String> tables) {
         HashMap<String, List<InputSplit>> tableToInputSplits = new HashMap<String, List<InputSplit>>();
@@ -44,8 +56,13 @@ public class Common {
 
                 String storagepath = "s3://jingrong-lambda-test/tpch/" + tableName + "/" + "v-0-ordered" + "/";
                 // System.out.println("storagepath: " + storagepath);
+
+                
                 Storage storage = StorageFactory.Instance().getStorage(storagepath);
+
+        
                 filePath = storage.listPaths(storagepath);
+
 
                 for (String line : filePath) {
                         InputSplit temp = new InputSplit(Arrays.asList(new InputInfo(line, 0, -1)));
