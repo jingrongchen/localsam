@@ -3,7 +3,7 @@
 cd /home/ubuntu/opt/pixels
 mvn clean install
 
-cd /home/ubuntu/opt/lambda-java8
+cd /home/ubuntu/opt/localsam
 rm -r .aws-sam
 cd HelloWorldFunction
 mvn clean package
